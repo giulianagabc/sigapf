@@ -2,107 +2,76 @@ package br.fatec.sigapf.service.impl;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import br.fatec.sigapf.dao.PlanilhaDAO;
 import br.fatec.sigapf.dominio.OS;
 import br.fatec.sigapf.dominio.Planilha;
-import br.fatec.sigapf.framework.exception.SystemRuntimeException;
+import br.fatec.sigapf.service.PlanilhaService;
 
-@Repository(value = "planilhaDAO")
+@Repository(value = "planilhaService")
 @Transactional
-public class PlanilhaServiceImpl implements PlanilhaDAO {
+public class PlanilhaServiceImpl implements PlanilhaService {
 
-	@PersistenceContext
-	private EntityManager entityManager;
+	@Autowired
+	private PlanilhaDAO planilhaDAO;
 
 	@Override
 	public List<Planilha> listar() {
-		return entityManager.createNamedQuery(DAONamedQueries.LISTAR_PLANILHAS,
-				Planilha.class).getResultList();
+		return planilhaDAO.listar();
 	}
 
 	@Override
 	public List<Planilha> listarCriadas() {
-		return entityManager.createNamedQuery(
-				DAONamedQueries.LISTAR_PLANILHAS_CRIADAS, Planilha.class)
-				.getResultList();
+		return planilhaDAO.listarCriadas();
 	}
 
 	@Override
 	public List<Planilha> listarEmRevisao() {
-		return entityManager.createNamedQuery(
-				DAONamedQueries.LISTAR_PLANILHAS_EM_REVISAO, Planilha.class)
-				.getResultList();
+		return planilhaDAO.listarEmRevisao();
 	}
 
 	@Override
 	public List<Planilha> listarRevisadas() {
-		return entityManager.createNamedQuery(
-				DAONamedQueries.LISTAR_PLANILHAS_REVISADAS, Planilha.class)
-				.getResultList();
+		return planilhaDAO.listarRevisadas();
 	}
 
 	@Override
 	public List<Planilha> listarEmAprovacao() {
-		return entityManager.createNamedQuery(
-				DAONamedQueries.LISTAR_PLANILHAS_EM_APROVACAO, Planilha.class)
-				.getResultList();
+		return planilhaDAO.listarEmAprovacao();
 	}
 
 	@Override
 	public List<Planilha> listarAprovadas() {
-		return entityManager.createNamedQuery(
-				DAONamedQueries.LISTAR_PLANILHAS_APROVADAS, Planilha.class)
-				.getResultList();
+		return planilhaDAO.listarAprovadas();
 	}
 
 	@Override
 	public List<Planilha> listarInvalidadas() {
-		return entityManager.createNamedQuery(
-				DAONamedQueries.LISTAR_PLANILHAS_INVALIDADAS, Planilha.class)
-				.getResultList();
+		return planilhaDAO.listarInvalidadas();
 	}
 
 	@Override
 	public Planilha obterPorId(int id) {
-		return entityManager.find(Planilha.class, id);
+		return planilhaDAO.obterPorId(id);
 	}
 
 	@Override
 	public Planilha salvar(Planilha planilha) {
-		verificarUnicidadePlanilha(planilha);
-		return entityManager.merge(planilha);
-	}
-
-	private void verificarUnicidadePlanilha(Planilha planilha) {
-		if (verificarUnicidade(planilha.getIdOs(), planilha.getNome(),
-				planilha.getId())) {
-			throw new SystemRuntimeException(
-					"Já existe uma planilha com esse nome na ordem de serviço atual!");
-		}
+		return planilhaDAO.salvar(planilha);
 	}
 
 	@Override
 	public boolean verificarUnicidade(OS idOs, String nome, Integer id) {
-		id = id == null ? -1 : id;
-		return (boolean) entityManager
-				.createNamedQuery(
-						DAONamedQueries.VERIFICAR_UNICIDADE_NOME_PLANILHA)
-				.setParameter("nome", nome.toUpperCase())
-				.setParameter("idOs", idOs).setParameter("id", id)
-				.getSingleResult();
+		return planilhaDAO.verificarUnicidade(idOs, nome, id);
 	}
 
 	@Override
 	public boolean verificarItensEmBranco(Planilha planilha) {
-		return (boolean) entityManager
-				.createNamedQuery(DAONamedQueries.VERIFICAR_ITENS_EM_BRANCO)
-				.setParameter("idPlanilha", planilha).getSingleResult();
+		return planilhaDAO.verificarItensEmBranco(planilha);
 	}
 
 }

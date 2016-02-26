@@ -5,37 +5,36 @@ import java.util.List;
 import javax.persistence.MappedSuperclass;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import br.fatec.sigapf.dao.TipoContagemDAO;
 import br.fatec.sigapf.dominio.TipoContagem;
 import br.fatec.sigapf.framework.dao.impl.EntidadeGenericaDAOImpl;
+import br.fatec.sigapf.service.TipoContagemService;
 
 @MappedSuperclass
 @Transactional
-@Repository(value = "tipoContagemDAO")
-public class TipoContagemServiceImpl extends EntidadeGenericaDAOImpl<TipoContagem>
-		implements TipoContagemDAO {
+@Repository(value = "tipoContagemService")
+public class TipoContagemServiceImpl extends
+		EntidadeGenericaDAOImpl<TipoContagem> implements TipoContagemService {
+
+	@Autowired
+	private TipoContagemDAO tipoContagemDAO;
 
 	@Override
 	public List<TipoContagem> listarTiposContagens() {
-		return entityManager.createNamedQuery(
-				DAONamedQueries.LISTAR_TIPOS_CONTAGEM, TipoContagem.class)
-				.getResultList();
+		return tipoContagemDAO.listarTiposContagens();
 	}
 
 	@Override
 	public List<TipoContagem> listarTiposContagensAtivos() {
-		return entityManager.createNamedQuery(
-				DAONamedQueries.LISTAR_TIPOS_CONTAGEM_ATIVOS,
-				TipoContagem.class).getResultList();
+		return tipoContagemDAO.listarTiposContagensAtivos();
 	}
 
 	@Override
 	public List<TipoContagem> listarTiposContagensNaoAtivos() {
-		return entityManager.createNamedQuery(
-				DAONamedQueries.LISTAR_TIPOS_CONTAGEM_N_ATIVOS,
-				TipoContagem.class).getResultList();
+		return tipoContagemDAO.listarTiposContagensNaoAtivos();
 	}
 
 }

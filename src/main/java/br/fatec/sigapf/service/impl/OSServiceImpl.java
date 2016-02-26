@@ -2,109 +2,68 @@ package br.fatec.sigapf.service.impl;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import br.fatec.sigapf.dao.OSDAO;
 import br.fatec.sigapf.dominio.Contrato;
 import br.fatec.sigapf.dominio.OS;
 import br.fatec.sigapf.dominio.Projeto;
-import br.fatec.sigapf.framework.exception.SystemRuntimeException;
+import br.fatec.sigapf.service.OSService;
 
-@Repository(value = "osDAO")
+@Repository(value = "osService")
 @Transactional
-public class OSServiceImpl implements OSDAO {
+public class OSServiceImpl implements OSService {
 
-	@PersistenceContext
-	private EntityManager entityManager;
+	@Autowired
+	private OSDAO osDAO;
 
 	@Override
 	public List<OS> listar() {
-		return entityManager.createNamedQuery(DAONamedQueries.LISTAR_OS,
-				OS.class).getResultList();
+		return osDAO.listar();
 	}
 
 	@Override
 	public List<OS> listarAtivos() {
-		return entityManager.createNamedQuery(DAONamedQueries.LISTAR_OS_ATIVAS,
-				OS.class).getResultList();
+		return osDAO.listarAtivos();
 	}
 
 	@Override
 	public List<OS> listarNaoAtivos() {
-		return entityManager.createNamedQuery(
-				DAONamedQueries.LISTAR_OS_N_ATIVAS, OS.class).getResultList();
+		return osDAO.listarNaoAtivos();
 	}
 
 	@Override
 	public OS obterPorId(int id) {
-		return entityManager.find(OS.class, id);
+		return osDAO.obterPorId(id);
 	}
 
 	@Override
 	public OS salvar(OS os) {
-		verificarUnicidadeOS(os);
-		return entityManager.merge(os);
+		return osDAO.salvar(os);
 	}
 
 	@Override
 	public boolean mudarStatusAtivoOS(Integer id, boolean b) {
-
-		boolean isContratoAtivo = entityManager
-				.createNamedQuery(
-						DAONamedQueries.VERIFICAR_CONTRATO_PARA_ATIVAR_OS,
-						Boolean.class).setParameter("id", id).getSingleResult();
-
-		if ((b == false) || (isContratoAtivo == true)) {
-			entityManager
-					.createNamedQuery(DAONamedQueries.MUDAR_STATUS_ATIVO_OS)
-					.setParameter("id", id).setParameter("status", b)
-					.executeUpdate();
-			return true;
-		} else {
-			return false;
-		}
+		return osDAO.mudarStatusAtivoOS(id, b);
 	}
 
 	@Override
 	public void mudarStatusAtivoOSPorContrato(Contrato contrato, boolean b) {
-		entityManager
-				.createNamedQuery(
-						DAONamedQueries.MUDAR_STATUS_ATIVO_OS_POR_CONTRATO)
-				.setParameter("idContrato", contrato).setParameter("status", b)
-				.executeUpdate();
+		osDAO.mudarStatusAtivoOSPorContrato(contrato, b);
 	}
 
 	@Override
 	public void mudarStatusAtivoOSPorProjeto(Projeto projeto, boolean b) {
-		entityManager
-				.createNamedQuery(
-						DAONamedQueries.MUDAR_STATUS_ATIVO_OS_POR_PROJETO)
-				.setParameter("idProjeto", projeto).setParameter("status", b)
-				.executeUpdate();
-	}
-
-	private void verificarUnicidadeOS(OS os) {
-		if (verificarUnicidade(os.getIdContrato(), os.getSigla(),
-				os.getId())) {
-			throw new SystemRuntimeException(
-					"Já existe uma ordem de serviço com essa sigla no contrato atual!");
-		}
+		osDAO.mudarStatusAtivoOSPorProjeto(projeto, b);
 	}
 
 	@Override
 	public boolean verificarUnicidade(Contrato idContrato, String sigla,
 			Integer id) {
-		id = id == null ? -1 : id;
-		return (boolean) entityManager
-				.createNamedQuery(
-						DAONamedQueries.VERIFICAR_UNICIDADE_SIGLA_OS)
-				.setParameter("sigla", sigla.toUpperCase())
-				.setParameter("idContrato", idContrato).setParameter("id", id)
-				.getSingleResult();
+		return osDAO.verificarUnicidade(idContrato, sigla, id);
 	}
 
 }

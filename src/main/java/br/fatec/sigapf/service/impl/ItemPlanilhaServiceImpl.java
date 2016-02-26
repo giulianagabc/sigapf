@@ -2,77 +2,47 @@ package br.fatec.sigapf.service.impl;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import br.fatec.sigapf.dao.ItemPlanilhaDAO;
 import br.fatec.sigapf.dominio.ItemPlanilha;
 import br.fatec.sigapf.dominio.Planilha;
-import br.fatec.sigapf.framework.exception.SystemRuntimeException;
+import br.fatec.sigapf.service.ItemPlanilhaService;
 
-@Repository(value = "itemPlanilhaDAO")
+@Repository(value = "itemPlanilhaService")
 @Transactional
-public class ItemPlanilhaServiceImpl implements ItemPlanilhaDAO {
+public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 
-	@PersistenceContext
-	private EntityManager entityManager;
+	@Autowired
+	private ItemPlanilhaDAO itemPlanilhaDAO;
 
 	@Override
 	public List<ItemPlanilha> listar(Planilha idPlanilha) {
-		return entityManager
-				.createNamedQuery(DAONamedQueries.LISTAR_ITENS_PLANILHA,
-						ItemPlanilha.class)
-				.setParameter("idPlanilha", idPlanilha).getResultList();
+		return itemPlanilhaDAO.listar(idPlanilha);
 	}
 
 	@Override
 	public ItemPlanilha obterPorId(int id) {
-		return entityManager.find(ItemPlanilha.class, id);
+		return itemPlanilhaDAO.obterPorId(id);
 	}
 
 	@Override
 	public ItemPlanilha salvar(ItemPlanilha itemPlanilha) {
-		verificarUnicidadeItemPlanilha(itemPlanilha);
-		return entityManager.merge(itemPlanilha);
-	}
-
-	private void verificarUnicidadeItemPlanilha(ItemPlanilha itemPlanilha) {
-		List<ItemPlanilha> lista = listar(itemPlanilha.getIdPlanilha());
-		if (!lista.isEmpty()) {
-			if ((verificarUnicidade(itemPlanilha.getNome(),
-					itemPlanilha.getId(), itemPlanilha.getIdPlanilha()))) {
-				if (itemPlanilha.getNome() == " ") {
-					throw new SystemRuntimeException(
-							"Já existe um item da planilha em branco! Favor preenchê-lo antes de criar um novo item!");
-				}
-				if (itemPlanilha.getNome() != " ") {
-					throw new SystemRuntimeException(
-							"Já existe um item da planilha com esse nome!");
-				}
-			}
-		}
+		return itemPlanilhaDAO.salvar(itemPlanilha);
 	}
 
 	@Override
 	public boolean verificarUnicidade(String nome, Integer id,
 			Planilha idPlanilha) {
-		id = id == null ? -1 : id;
-		return (boolean) entityManager
-				.createNamedQuery(
-						DAONamedQueries.VERIFICAR_UNICIDADE_NOME_ITEM_PLANILHA)
-				.setParameter("nome", nome.toUpperCase())
-				.setParameter("id", id).setParameter("idPlanilha", idPlanilha)
-				.getSingleResult();
+		return itemPlanilhaDAO.verificarUnicidade(nome, id, idPlanilha);
 	}
 
 	@Override
 	public ItemPlanilha excluirItemPlanilha(Integer id) {
-		entityManager.createNamedQuery(DAONamedQueries.EXCLUIR_ITEM_PLANILHA)
-				.setParameter("id", id).executeUpdate();
-		return obterPorId(id);
+		return itemPlanilhaDAO.excluirItemPlanilha(id);
 	}
 
 }

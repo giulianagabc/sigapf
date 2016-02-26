@@ -2,78 +2,55 @@ package br.fatec.sigapf.service.impl;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import br.fatec.sigapf.dao.ProjetoDAO;
 import br.fatec.sigapf.dominio.Projeto;
-import br.fatec.sigapf.framework.exception.SystemRuntimeException;
+import br.fatec.sigapf.service.ProjetoService;
 
-@Repository(value = "projetoDAO")
+@Repository(value = "projetoService")
 @Transactional
-public class ProjetoServiceImpl implements ProjetoDAO {
+public class ProjetoServiceImpl implements ProjetoService {
 
-	@PersistenceContext
-	private EntityManager entityManager;
+	@Autowired
+	private ProjetoDAO projetoDAO;
 
 	@Override
 	public List<Projeto> listar() {
-		return entityManager.createNamedQuery(
-				DAONamedQueries.LISTAR_PROJETOS, Projeto.class)
-				.getResultList();
+		return projetoDAO.listar();
 	}
 
 	@Override
 	public List<Projeto> listarAtivos() {
-		return entityManager.createNamedQuery(
-				DAONamedQueries.LISTAR_PROJETOS_ATIVOS, Projeto.class)
-				.getResultList();
+		return projetoDAO.listarAtivos();
 	}
 
 	@Override
 	public List<Projeto> listarNaoAtivos() {
-		return entityManager.createNamedQuery(
-				DAONamedQueries.LISTAR_PROJETOS_N_ATIVOS, Projeto.class)
-				.getResultList();
+		return projetoDAO.listarNaoAtivos();
 	}
 
 	@Override
 	public Projeto obterPorId(int id) {
-		return entityManager.find(Projeto.class, id);
+		return projetoDAO.obterPorId(id);
 	}
 
 	@Override
 	public Projeto salvar(Projeto projeto) {
-		verificarUnicidadeProjeto(projeto);
-		return entityManager.merge(projeto);
+		return projetoDAO.salvar(projeto);
 	}
 
 	@Override
 	public void mudarStatusAtivoProjeto(Integer id, boolean b) {
-		entityManager
-				.createNamedQuery(DAONamedQueries.MUDAR_STATUS_ATIVO_PROJETO)
-				.setParameter("id", id).setParameter("status", b)
-				.executeUpdate();
-	}
-	
-	private void verificarUnicidadeProjeto(Projeto projeto) {
-		if (verificarUnicidade(projeto.getId(), projeto.getSigla())) {
-			throw new SystemRuntimeException(
-					"Já existe um projeto com essa sigla!");
-		}
+		projetoDAO.mudarStatusAtivoProjeto(id, b);
 	}
 
 	@Override
 	public boolean verificarUnicidade(Integer id, String sigla) {
-		id = id == null ? -1 : id;
-		return (boolean) entityManager
-				.createNamedQuery(
-						DAONamedQueries.VERIFICAR_UNICIDADE_SIGLA_PROJETO)
-				.setParameter("sigla", sigla.toUpperCase())
-				.setParameter("id", id).getSingleResult();
+		return projetoDAO.verificarUnicidade(id, sigla);
 	}
 
 }

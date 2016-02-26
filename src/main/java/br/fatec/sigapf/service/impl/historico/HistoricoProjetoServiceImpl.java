@@ -2,38 +2,35 @@ package br.fatec.sigapf.service.impl.historico;
 
 import java.util.List;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import br.fatec.sigapf.dao.historico.HistoricoProjetoDAO;
-import br.fatec.sigapf.dao.impl.DAONamedQueries;
 import br.fatec.sigapf.dominio.historico.HistoricoProjeto;
+import br.fatec.sigapf.service.historico.HistoricoProjetoService;
 
-@Repository(value = "historicoProjetoDAO")
+@Repository(value = "historicoProjetoService")
 @Transactional
-public class HistoricoProjetoServiceImpl implements HistoricoProjetoDAO {
+public class HistoricoProjetoServiceImpl implements HistoricoProjetoService {
 
-	@PersistenceContext
-	private EntityManager entityManager;
+	@Autowired
+	private HistoricoProjetoDAO historicoProjetoDAO;
 
 	@Override
 	public List<HistoricoProjeto> listar() {
-		return entityManager.createNamedQuery(
-				DAONamedQueries.LISTAR_HISTORICO_PROJETO,
-				HistoricoProjeto.class).getResultList();
+		return historicoProjetoDAO.listar();
 	}
 
 	@Override
 	public HistoricoProjeto salvar(HistoricoProjeto historicoProjeto) {
-		return entityManager.merge(historicoProjeto);
+		return historicoProjetoDAO.salvar(historicoProjeto);
 	}
 
 	@Override
 	public HistoricoProjeto obterPorId(int id) {
-		return entityManager.find(HistoricoProjeto.class, id);
+		return historicoProjetoDAO.obterPorId(id);
 	}
 
 }

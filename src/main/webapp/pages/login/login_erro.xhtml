@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:pt="http://java.sun.com/jsf/passthrough">
+
+<h:head>
+	<title>SIGAPF</title>
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/vendor/css/bootstrap.css?v=#{versaoInterna}" />
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/vendor/css/font-awesome.css?v=#{versaoInterna}" />
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/css/correcoes.css?v=#{versaoInterna}" />
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/css/estrutura.css?v=#{versaoInterna}" />
+	<link rel="stylesheet" type="text/css"
+		href="#{request.contextPath}/resources/css/gaps.css?v=#{versaoInterna}" />
+	<link rel="shortcut icon" type="image/x-icon"
+		href="#{request.contextPath}/resources/imagens/favicon.ico" />
+	<script>
+		$(document).ready(function() {
+			$('#j_username').focus()
+		});
+	</script>
+</h:head>
+<h:body styleClass="login">
+	<div class="vgap-100"></div>
+	<div class="container">
+		<div class="row">
+			<div class="span6 offset3 painel-login">
+				<form class="form-horizontal" id="login_form"
+					action='#{request.contextPath}/j_spring_security_check'
+					method="post">
+					<h:panelGrid style="margin: 30px auto 15px auto">
+						<img src="/sigapf/resources/imagens/fita.png" width="150"
+							height="150"></img>
+					</h:panelGrid>
+					<h:panelGrid style="margin: 30px auto 15px auto">
+						<h:panelGroup styleClass="inner-addon left-addon">
+							<span class="fa fa-user"> </span>
+							<p:inputText widgetVar="j_username" id="j_username"
+								placeholder="Nome de usuário" size="10" />
+						</h:panelGroup>
+						<div class="vgap-5"></div>
+
+						<h:panelGroup styleClass="inner-addon left-addon">
+							<span class="fa fa-key"> </span>
+							<p:password widgetVar="j_password" id="j_password"
+								placeholder="Senha" />
+						</h:panelGroup>
+
+						<div class="vgap-15"></div>
+						<div class="text-right">
+							<button type="submit" id="entrar"
+								class="btn btn-primary btn-block">
+								<span class="fa fa-sign-in" /> Entrar
+							</button>
+						</div>
+					</h:panelGrid>
+					<h:panelGroup>
+						<div class="alert alert-error text-center" id="error">${sessionScope.SPRING_SECURITY_LAST_EXCEPTION.message}</div>
+					</h:panelGroup>
+				</form>
+
+			</div>
+		</div>
+		<div class="vgap-10"></div>
+		<div class="row">
+			<div class="span6 offset3 text-center">
+				<small class="text-info">Versão: #{versaoInterna}</small>
+			</div>
+		</div>
+	</div>
+
+</h:body>
+</html>

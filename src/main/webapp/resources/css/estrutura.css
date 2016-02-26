@@ -1,0 +1,106 @@
+/* LOGIN PAGE */
+.login {
+	background: #E0DADA;
+}
+
+.login .ui-panel {
+	padding: 0px;
+}
+
+.login .ui-widget-content {
+	height: 0px;
+	border: none;
+}
+
+.login .painel-login {
+	width: 460px;
+	height: 450px;
+	box-shadow: 1px 1px 9px #000000;
+	background-color: #FFF;
+}
+
+.login .ui-panel-content {
+	background: #FFF;
+	background-size: 460px;
+}
+
+.login .form-horizontal .control-group {
+	margin-bottom: 10px;
+}
+
+.login .form-horizontal .control-label {
+	width: 60px;
+}
+
+.login .form-horizontal .controls {
+	margin-left: 75px;
+}
+
+.login input[type="text"], .login input[type="password"], .login textarea,
+	.login .uneditable-input {
+	width: 140px;
+}
+
+/* TEMPLATE PAGE */
+/* -- TOPO */
+.topo {
+	padding: 10px;
+	background: url("../imagens/logoSigapf.png") no-repeat #E0DADA;
+	color: #000;
+	height: 60px;
+	position: static;
+}
+
+.topo a, .topo .btn-link {
+	color: #000 !important;
+}
+
+.topo a:hover, .topo .btn-link {
+	color: #000 !important;
+}
+
+/* LOADING */
+.loading-dialog .ui-dialog-titlebar {
+	display: none;
+}
+
+.dialog-footer {
+	text-align: right;
+	border-top: 1px solid #ddd;
+	padding-top: 15px;
+	margin-top: 5px
+}
+
+.formulario-vertical .ui-outputlabel {
+	text-align: left;
+}
+
+.menu-sigapf {
+	border: 1px solid #E5E5E5;
+	position: static;
+}
+
+.menu-sigapf.ui-accordion .ui-icon {
+	display: block !important;	
+}
+
+.menu-sigapf .ui-accordion-header {
+	background: #f5f5f5;	
+	border: 0 !important;
+}
+
+.menu-sigapf.ui-accordion .ui-accordion-content.ui-widget-content {
+	padding: 0;	
+	overflow: hidden;
+	border: 0 !important;
+}
+
+.menu-sigapf.ui-accordion .ui-accordion-content .ui-menu {
+	border: 0 !important;
+}
+
+/* SOBRE */
+
+.sobre {
+	text-align: center;
+}

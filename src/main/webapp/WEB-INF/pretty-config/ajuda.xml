@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+	<url-mapping id="arquivo-manual">
+		<pattern value="/manual/" />
+		<view-id value="/pages/arquivos/manual.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="arquivo-sobre">
+		<pattern value="/sobre/" />
+		<view-id value="/pages/arquivos/sobre.jsf" />
+	</url-mapping>
+	
+</pretty-config>

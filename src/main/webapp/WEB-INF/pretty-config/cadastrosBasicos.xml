@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+	<!-- USUARIO -->
+
+	<url-mapping id="cadastro-usuario-lista">
+		<pattern value="/cadastro/usuario/" />
+		<view-id value="/pages/cadastro/usuario/cadastro-usuario-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-usuario-formulario">
+		<pattern value="/cadastro/usuario/#{id}" />
+		<view-id value="/pages/cadastro/usuario/cadastro-usuario-formulario.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-usuario-formulario-detalhes">
+		<pattern value="/cadastro/usuario/detalhes/#{id}" />
+		<view-id value="/pages/cadastro/usuario/cadastro-usuario-detalhes.jsf" />
+	</url-mapping>
+
+	<!-- PROJETO -->
+
+	<url-mapping id="cadastro-projeto-lista">
+		<pattern value="/cadastro/projeto/" />
+		<view-id value="/pages/cadastro/projeto/cadastro-projeto-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-projeto-formulario">
+		<pattern value="/cadastro/projeto/#{id}" />
+		<view-id value="/pages/cadastro/projeto/cadastro-projeto-formulario.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-projeto-detalhes">
+		<pattern value="/cadastro/projeto/detalhes/#{id}" />
+		<view-id value="/pages/cadastro/projeto/cadastro-projeto-detalhes.jsf" />
+	</url-mapping>
+
+	<!-- CONTRATO -->
+
+	<url-mapping id="cadastro-contrato-lista">
+		<pattern value="/cadastro/contrato/" />
+		<view-id value="/pages/cadastro/contrato/cadastro-contrato-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-contrato-formulario">
+		<pattern value="/cadastro/contrato/#{id}" />
+		<view-id value="/pages/cadastro/contrato/cadastro-contrato-formulario.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-contrato-detalhes">
+		<pattern value="/cadastro/contrato/detalhes/#{id}" />
+		<view-id value="/pages/cadastro/contrato/cadastro-contrato-detalhes.jsf" />
+	</url-mapping>
+
+	<!-- OS -->
+
+	<url-mapping id="cadastro-os-lista">
+		<pattern value="/cadastro/os/" />
+		<view-id value="/pages/cadastro/os/cadastro-os-lista.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-os-formulario">
+		<pattern value="/cadastro/os/#{id}" />
+		<view-id value="/pages/cadastro/os/cadastro-os-formulario.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-os-detalhes">
+		<pattern value="/cadastro/os/detalhes/#{id}" />
+		<view-id value="/pages/cadastro/os/cadastro-os-detalhes.jsf" />
+	</url-mapping>
+
+</pretty-config>

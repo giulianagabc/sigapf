@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:sec="http://www.springframework.org/security/tags">
+
+	<h:outputText value="#{pageContext.request.pathTranslated}" />
+
+	<h:form id="form-menu" prependId="false">
+
+		<p:accordionPanel styleClass="menu-sigapf"
+			activeIndex="#{sessionBean.menuIndex}" dynamic="true" id="menu">
+			<p:ajax event="tabChange" listener="#{sessionBean.menuTabChange}"
+				global="false" immediate="true" />
+
+			<p:tab title="Cadastros Básicos" id="cadastros-tab">
+
+				<p:menu>
+					<sec:authorize access="hasAnyRole('ADM', 'APF', 'GPF', 'AUD')">
+						<p:menuitem icon="fa fa-th-large" value="Página Inicial"
+							id="menu-principal" url="/principal/" />
+					</sec:authorize>
+
+					<sec:authorize access="hasAnyRole('ADM')">
+						<p:menuitem icon="fa fa-user" value="Usuários" id="menu-usuarios"
+							url="/cadastro/usuario/" />
+					</sec:authorize>
+
+					<sec:authorize access="hasAnyRole('APF', 'GPF')">
+						<p:menuitem icon="fa fa-briefcase" value="Projetos"
+							id="menu-projetos" url="/cadastro/projeto/" />
+						<p:menuitem icon="fa fa-book" value="Contratos"
+							id="menu-contratos" url="/cadastro/contrato/" />
+						<p:menuitem icon="fa fa-paste" value="Ordens de Serviço"
+							id="menu-ordens" url="/cadastro/os/" />
+					</sec:authorize>
+
+
+				</p:menu>
+
+			</p:tab>
+
+			<sec:authorize access="hasAnyRole('APF', 'GPF')">
+
+				<p:tab title="Planilha" id="planilha-tab">
+
+					<p:menu>
+						<p:menuitem icon="fa fa-edit" value="Nova Planilha"
+							id="nova-contagem" url="/contagem/planilha/novo" />
+						<p:menuitem icon="fa fa-table" value="Criadas"
+							id="criada-contagem" url="/contagem/planilha/criada/" />
+						<p:menuitem icon="fa fa-folder-open" value="Em Revisão"
+							id="em-revisao-contagem" url="/contagem/planilha/em-revisao/" />
+						<p:menuitem icon="fa fa-folder" value="Revisadas"
+							id="revisada-contagem" url="/contagem/planilha/revisada/" />
+						<p:menuitem icon="fa fa-folder-open-o" value="Em Aprovação"
+							id="em-aprovacao-contagem" url="/contagem/planilha/em-aprovacao/" />
+						<p:menuitem icon="fa fa-folder-o" value="Aprovadas"
+							id="aprovada-contagem" url="/contagem/planilha/aprovada/" />
+						<p:menuitem icon="fa fa-ban" value="Invalidadas"
+							id="invalidada-contagem" url="/contagem/planilha/invalidada/" />
+						<p:menuitem icon="fa fa-list" value="Todas as Planilhas"
+							id="todas-contagem" url="/contagem/planilha/" />
+					</p:menu>
+
+				</p:tab>
+
+			</sec:authorize>
+
+			<sec:authorize access="hasAnyRole('AUD')">
+
+				<p:tab title="Auditoria" id="auditoria-tab">
+
+					<p:menu>
+						<p:menuitem icon="fa fa-balance-scale" value="Usuário"
+							id="auditoria-usuario" url="" />
+						<p:menuitem icon="fa fa-balance-scale" value="Projeto"
+							id="auditoria-projeto" url="" />
+						<p:menuitem icon="fa fa-balance-scale" value="Contrato"
+							id="auditoria-contrato" url="" />
+						<p:menuitem icon="fa fa-balance-scale" value="OS"
+							id="auditoria-os" url="" />
+						<p:menuitem icon="fa fa-balance-scale" value="Planilha"
+							id="auditoria-planilha" url="" />
+						<p:menuitem icon="fa fa-balance-scale" value="Item da Planilha"
+							id="auditoria-item-planilha" url="" />
+						<p:menuitem icon="fa fa-balance-scale" value="Anexo"
+							id="auditoria-anexo" url="" />
+					</p:menu>
+
+				</p:tab>
+
+			</sec:authorize>
+
+			<sec:authorize access="hasAnyRole('APF', 'GPF')">
+
+				<p:tab title="Ajuda" id="ajuda-tab">
+
+					<p:menu>
+						<p:menuitem icon="fa fa-list-alt" value="Manual do Usuário"
+							id="menu-manual" url="/manual/" />
+						<p:menuitem icon="fa fa-columns" value="IFPUG" id="menu-ifpug"
+							url="http://www.ifpug.org/" />
+						<p:menuitem icon="fa fa-columns" value="NESMA" id="menu-nesma"
+							url="http://nesma.org/" />
+						<p:menuitem icon="fa fa-columns" value="SISP" id="menu-sisp"
+							url="http://www.sisp.gov.br/" />
+
+						<p:menuitem icon="fa fa-laptop" value="Sobre o Sistema"
+							id="menu-sobre" url="/sobre/" />
+					</p:menu>
+
+				</p:tab>
+
+			</sec:authorize>
+
+		</p:accordionPanel>
+
+	</h:form>
+
+</ui:composition>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/template/template.xhtml">
+
+	<ui:define name="html-title">Lista de Planilhas</ui:define>
+
+	<ui:define name="main">
+
+		<h3>Lista de Planilhas Em Aprovação</h3>
+
+		<p:separator></p:separator>
+
+		<h:form id="formulario-planilha-lista">
+
+			<div class="vgap-10"></div>
+
+			<p:messages id="msgs" showIcon="false" autoUpdate="true" />
+
+			<div class="vgap-10"></div>
+
+			<p:dataTable value="#{cadastroPlanilhaEmAprovacaoListaBean.planilhas}"
+				var="planilha" emptyMessage="#{msgs.no_records_found}">
+
+				<p:column headerText="Projeto" width="70" styleClass="text-center"
+					filterBy="#{planilha.idOs.idContrato.idProjeto.sigla}"
+					filterMatchMode="contains">
+	  			#{planilha.idOs.idContrato.idProjeto.sigla}
+	  			</p:column>
+
+				<p:column headerText="Contrato" width="100" styleClass="text-center"
+					filterBy="#{planilha.idOs.idContrato.sigla}"
+					filterMatchMode="contains">
+	  			#{planilha.idOs.idContrato.sigla}
+	  			</p:column>
+
+				<p:column headerText="Ordem de Serviço" width="100"
+					styleClass="text-center" filterBy="#{planilha.idOs.sigla}"
+					filterMatchMode="contains">
+	  			#{planilha.idOs.sigla}
+	  			</p:column>
+
+				<p:column headerText="Nome da Planilha" width="150"
+					styleClass="text-center" filterBy="#{planilha.nome}"
+					filterMatchMode="contains">
+  				#{planilha.nome}
+  				</p:column>
+
+				<p:column width="40" styleClass="text-center">
+					<a href="../detalhes/#{planilha.id}" id="visualiza"
+						class="btn"> <span class="fa fa-search"></span> <f:param
+							value="#{planilha.id}" name="id"></f:param>
+					</a>
+				</p:column>
+
+				<p:column width="40" styleClass="text-center">
+					<a href="../#{planilha.id}" id="altera" class="btn"> <span
+						class="fa fa-pencil"></span> <f:param value="#{planilha.id}"
+							name="id"></f:param>
+					</a>
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

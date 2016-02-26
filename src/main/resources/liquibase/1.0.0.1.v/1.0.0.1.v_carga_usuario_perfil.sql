@@ -1,0 +1,1 @@
+insert into tb_usuario_perfil values ((select MIN(id) from tb_usuario), 'ADM');

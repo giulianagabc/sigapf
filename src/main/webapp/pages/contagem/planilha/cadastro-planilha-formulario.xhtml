@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/template/template.xhtml">
+
+	<ui:define name="html-title">Cadastro de Planilha</ui:define>
+
+	<ui:define name="main">
+
+		<h3>Formulário de Planilha</h3>
+
+		<p:separator></p:separator>
+
+		<div class="vgap-10"></div>
+
+		<h:form id="formulario-planilha-revisada" prependId="false"
+			rendered="#{cadastroPlanilhaFormularioBean.planilha.estado == 'REVISADA'}">
+			<h1>
+				<span class="fa fa-times text-error">Acesso negado!</span>
+			</h1>
+			Não é possível editar a planilha pois a mesma já se encontra revisada!
+		</h:form>
+
+		<h:form id="formulario-planilha-aprovada" prependId="false"
+			rendered="#{cadastroPlanilhaFormularioBean.planilha.estado == 'APROVADA'}">
+			<h1>
+				<span class="fa fa-times text-error">Acesso negado!</span>
+			</h1>
+			Não é possível editar a planilha pois a mesma já se encontra aprovada!
+		</h:form>
+
+		<h:form id="formulario-planilha-invalidada" prependId="false"
+			rendered="#{cadastroPlanilhaFormularioBean.planilha.estado == 'INVALIDADA'}">
+			<h1>
+				<span class="fa fa-times text-error">Acesso negado!</span>
+			</h1>
+			Não é possível editar a planilha pois a mesma já se encontra invalidada!
+		</h:form>
+
+		<h:form id="formulario-planilha" prependId="false"
+			rendered="#{cadastroPlanilhaFormularioBean.planilha.estado != 'APROVADA' 
+				and cadastroPlanilhaFormularioBean.planilha.estado != 'INVALIDADA' 
+				and cadastroPlanilhaFormularioBean.planilha.estado != 'REVISADA'}">
+
+			<p:messages id="msgs" showIcon="false" autoUpdate="true" />
+
+			<h:panelGrid columns="7" styleClass="formulario-sigapf">
+
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Ordem de Serviço:" for="os" />
+					</p:column>
+					<p:column>
+						<p:selectOneMenu
+							value="#{cadastroPlanilhaFormularioBean.planilha.idOs}"
+							converter="jsonConverter" id="os">
+							<f:selectItem itemLabel="Selecionar" noSelectionOption="true"></f:selectItem>
+							<f:selectItems value="#{cadastroPlanilhaFormularioBean.oss}"
+								itemLabel="#{os.idContrato.idProjeto.sigla} - #{os.idContrato.sigla} - #{os.sigla}"
+								itemValue="#{os}" var="os" />
+						</p:selectOneMenu>
+					</p:column>
+					<div class="vgap-10"></div>
+				</p:row>
+				<div class="hgap-10"></div>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Nome da Planilha:" for="nome" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroPlanilhaFormularioBean.planilha.nome}" id="nome"
+							size="30" />
+					</p:column>
+				</p:row>
+				<div class="hgap-10"></div>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Empresa:" for="empresa" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroPlanilhaFormularioBean.planilha.empresa}"
+							id="empresa" size="30" />
+					</p:column>
+				</p:row>
+				<div class="hgap-10"></div>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Tipo de Contagem:" for="idTipoContagem" />
+					</p:column>
+					<p:column>
+						<p:selectOneMenu
+							value="#{cadastroPlanilhaFormularioBean.planilha.idTipoContagem}"
+							converter="jsonConverter" id="idTipoContagem">
+							<f:selectItem itemLabel="Selecionar" noSelectionOption="true"></f:selectItem>
+							<f:selectItems
+								value="#{cadastroPlanilhaFormularioBean.tiposContagens}"
+								var="idTipoContagem" itemLabel="#{idTipoContagem.sigla}"
+								itemValue="#{idTipoContagem}" />
+						</p:selectOneMenu>
+					</p:column>
+					<div class="vgap-10"></div>
+				</p:row>
+			</h:panelGrid>
+			<div class="vgap-10"></div>
+			<h:panelGrid columns="7" styleClass="formulario-sigapf">
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Valor Deflator - Inclusão:"
+							for="deflatorAdd" />
+					</p:column>
+					<p:column>
+						<p:inputText converter="doubleConverter" styleClass="number"
+							id="deflatorAdd" required="true" size="2"
+							value="#{cadastroPlanilhaFormularioBean.planilha.deflatorAdd}" />
+					</p:column>
+				</p:row>
+				<div class="hgap-59"></div>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Valor Deflator - Conversão:"
+							for="deflatorCon" />
+					</p:column>
+					<p:column>
+						<p:inputText converter="doubleConverter" styleClass="number"
+							id="deflatorCon" required="true" size="2"
+							value="#{cadastroPlanilhaFormularioBean.planilha.deflatorCon}" />
+					</p:column>
+				</p:row>
+				<div class="hgap-65"></div>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Valor do Ponto de Função:"
+							for="valorPontoFuncao" />
+					</p:column>
+					<p:column>
+						<p:inputText converter="doubleConverter" styleClass="number"
+							id="valorPontoFuncao" required="true" size="5"
+							value="#{cadastroPlanilhaFormularioBean.planilha.valorPontoFuncao}" />
+					</p:column>
+				</p:row>
+				<div class="hgap-69"></div>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Estado:" for="estado" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroPlanilhaFormularioBean.planilha.estado.label}"
+							id="estado" size="15" disabled="true" />
+					</p:column>
+				</p:row>
+			</h:panelGrid>
+			<div class="vgap-10"></div>
+			<h:panelGrid columns="3" styleClass="formulario-sigapf">
+				<p:row
+					rendered="#{cadastroPlanilhaFormularioBean.planilha.idUsuarioCriador != null}">
+					<p:column>
+						<p:outputLabel value="Usuário Criador:" for="usuarioCriador" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroPlanilhaFormularioBean.planilha.idUsuarioCriador.login}"
+							id="usuarioCriador" size="15" disabled="true" />
+					</p:column>
+				</p:row>
+				<div class="hgap-90"></div>
+				<p:row
+					rendered="#{cadastroPlanilhaFormularioBean.planilha.idUsuarioRevisor != null}">
+					<p:column>
+						<p:outputLabel value="Usuário Revisor:" for="usuarioRevisor" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroPlanilhaFormularioBean.planilha.idUsuarioRevisor.login}"
+							id="usuarioRevisor" size="15" disabled="true" />
+					</p:column>
+				</p:row>
+			</h:panelGrid>
+			<div class="vgap-10"></div>
+			<h:panelGrid columns="3" styleClass="formulario-sigapf">
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Escopo da Contagem:" for="escopo" />
+					</p:column>
+					<p:column>
+						<p:inputTextarea
+							value="#{cadastroPlanilhaFormularioBean.planilha.escopo}"
+							rows="5" cols="66" id="escopo" />
+					</p:column>
+				</p:row>
+				<div class="hgap-10"></div>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Propósito da Contagem:" for="proposito" />
+					</p:column>
+					<p:column>
+						<p:inputTextarea
+							value="#{cadastroPlanilhaFormularioBean.planilha.proposito}"
+							rows="5" cols="67" id="proposito" />
+					</p:column>
+				</p:row>
+			</h:panelGrid>
+
+			<div class="vgap-30"></div>
+
+			<p:commandButton
+				styleClass="#{cadastroPlanilhaFormularioBean.planilha.id == null ? 'btn btn-success' : 'btn'}"
+				rendered="#{cadastroPlanilhaFormularioBean.planilha.estado != 'APROVADA'
+				and cadastroPlanilhaFormularioBean.planilha.estado != 'INVALIDADA'
+				and cadastroPlanilhaFormularioBean.planilha.estado != 'REVISADA'}"
+				action="#{cadastroPlanilhaFormularioBean.salvar}" value=" Salvar"
+				id="salvar" update=":formulario-planilha @form" icon="fa fa-save"
+				validateClient="true" />
+
+			<p:commandButton styleClass="btn btn-success margin-l-5"
+				rendered="#{cadastroPlanilhaFormularioBean.planilha.estado == 'CRIADA'
+				and cadastroPlanilhaFormularioBean.planilha.id != null}"
+				action="#{cadastroPlanilhaFormularioBean.selecionarPlanilhaEnviarRevisao(cadastroPlanilhaFormularioBean.planilha)}"
+				value=" Enviar para Revisão" id="enviar_revisao"
+				update=":formulario-planilha @form" icon="fa fa-share"
+				validateClient="true" />
+
+			<p:commandButton styleClass="btn btn-success margin-l-5"
+				rendered="#{cadastroPlanilhaFormularioBean.planilha.estado == 'EM_REVISAO'}"
+				action="#{cadastroPlanilhaFormularioBean.selecionarPlanilhaRevisar(cadastroPlanilhaFormularioBean.planilha)}"
+				update=":formulario-planilha @form" value=" Revisar" id="revisar"
+				icon="fa fa-thumb-tack" validateClient="true" />
+
+			<p:commandButton styleClass="btn btn-success margin-l-5"
+				rendered="#{cadastroPlanilhaFormularioBean.planilha.estado == 'EM_APROVACAO'}"
+				action="#{cadastroPlanilhaFormularioBean.selecionarPlanilhaAprovar(cadastroPlanilhaFormularioBean.planilha)}"
+				update=":formulario-planilha @form" value=" Aprovar" id="aprovar"
+				icon="fa fa-thumb-tack" validateClient="true" />
+
+			<p:commandButton styleClass="btn btn-danger margin-l-5"
+				rendered="#{cadastroPlanilhaFormularioBean.planilha.estado != 'APROVADA'
+				and cadastroPlanilhaFormularioBean.planilha.id != null}"
+				action="#{cadastroPlanilhaFormularioBean.selecionarPlanilhaInvalidar(cadastroPlanilhaFormularioBean.planilha)}"
+				update="@form :formulario-planilha" value=" Invalidar"
+				id="invalidar" icon="fa fa-ban" validateClient="true" />
+
+			<p:row
+				rendered="#{cadastroPlanilhaFormularioBean.planilha.estado == 'CRIADA'}">
+				<a href="../planilha/criada/" id="voltar-criada" class="btn">Voltar</a>
+			</p:row>
+			<p:row
+				rendered="#{cadastroPlanilhaFormularioBean.planilha.estado == 'EM_REVISAO'}">
+				<a href="../planilha/em-revisao/" id="voltar-em-revisao" class="btn">Voltar</a>
+			</p:row>
+			<p:row
+				rendered="#{cadastroPlanilhaFormularioBean.planilha.estado == 'REVISADA'}">
+				<a href="../planilha/revisada/" id="voltar-revisada" class="btn">Voltar</a>
+			</p:row>
+			<p:row
+				rendered="#{cadastroPlanilhaFormularioBean.planilha.estado == 'EM_APROVACAO'}">
+				<a href="../planilha/em-aprovacao/" id="voltar-em-aprovacao"
+					class="btn">Voltar</a>
+			</p:row>
+			<p:row
+				rendered="#{cadastroPlanilhaFormularioBean.planilha.estado == 'APROVADA'}">
+				<a href="../planilha/aprovada/" id="voltar-aprovada" class="btn">Voltar</a>
+			</p:row>
+
+			<p:commandButton styleClass="btn btn-info margin-l-5"
+				rendered="#{cadastroPlanilhaFormularioBean.planilha.id != null}"
+				action="#{cadastroPlanilhaFormularioBean.listarItens}"
+				value=" Listar Itens da Planilha" id="listar" icon="fa fa-th"
+				validateClient="true" />
+
+		</h:form>
+	</ui:define>
+
+	<ui:define name="dialogs">
+		<ui:include src="aprovar-planilha-dialog.xhtml" />
+		<ui:include src="revisar-planilha-dialog.xhtml" />
+		<ui:include src="invalidar-planilha-dialog.xhtml" />
+		<ui:include src="enviar-revisao-planilha-dialog.xhtml" />
+		<ui:include src="enviar-aprovacao-planilha-dialog.xhtml" />
+	</ui:define>
+
+</ui:composition>

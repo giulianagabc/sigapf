@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/template/template.xhtml">
+
+	<ui:define name="html-title">Lista de Usuários</ui:define>
+
+	<ui:define name="main">
+
+		<h3>Lista de Usuários</h3>
+
+		<p:separator></p:separator>
+
+		<h:form id="formulario-usuario-lista">
+
+			<a id="criar" class="btn btn-success" href="../usuario/novo"> <span
+				class="fa fa-plus-square"></span> <span>Criar novo Usuário</span>
+			</a>
+
+			<div class="vgap-10"></div>
+
+			<p:messages id="msgs" showIcon="false" autoUpdate="true" />
+
+			<div class="vgap-10"></div>
+
+			<p:dataTable value="#{cadastroUsuarioListaBean.usuarios}"
+				var="usuario" emptyMessage="#{msgs.no_records_found}">
+
+				<p:column headerText="Login" filterBy="#{usuario.login}"
+					filterMatchMode="contains" width="100" styleClass="text-center">
+		  				#{usuario.login}
+		  			</p:column>
+
+				<p:column id="ativo" headerText="Ativo" width="50"
+					styleClass="text-center">
+							#{usuario.ativo ? 'Sim' : 'Não'}
+					</p:column>
+
+				<p:column headerText="Patente" width="50" styleClass="text-center">
+	  					#{usuario.idPatente.sigla}
+	  				</p:column>
+
+				<p:column headerText="Quadro" width="50" styleClass="text-center">
+	  					#{usuario.idQuadro.sigla}
+	  				</p:column>
+
+				<p:column headerText="Especialidade" width="90"
+					styleClass="text-center">
+	  					#{usuario.idEspecialidade.sigla}
+	  				</p:column>
+
+				<p:column headerText="Nome de Guerra" width="100"
+					styleClass="text-center">
+	  					#{usuario.nomeGuerra}
+	  				</p:column>
+
+				<p:column headerText="Nome Completo" styleClass="text-center">
+	  					#{usuario.nomeCompleto}
+  				</p:column>
+
+				<p:column headerText="Email" styleClass="text-center" width="180">
+	  					#{usuario.email}
+  				</p:column>
+
+				<p:column width="40" styleClass="text-center">
+					<a href="../usuario/detalhes/#{usuario.id}" id="visualiza"
+						class="btn" title="Visualizar Detalhes"> <span
+						class="fa fa-search"></span> <f:param value="#{usuario.id}"
+							name="id"></f:param>
+					</a>
+				</p:column>
+
+				<p:column width="40" styleClass="text-center">
+					<a href="../usuario/#{usuario.id}" id="altera" class="btn"
+						title="Editar"> <span class="fa fa-pencil"></span> <f:param
+							value="#{usuario.id}" name="id"></f:param>
+					</a>
+				</p:column>
+
+				<p:column id="btn-ativo" width="40" styleClass="text-center">
+					<p:commandButton id="ativar-desativar"
+						icon="fa #{usuario.ativo ? 'fa-times text-error' : 'fa-check text-success'}"
+						title="#{usuario.ativo ? 'Desativar' : 'Ativar'}"
+						styleClass="btn btn-link"
+						action="#{cadastroUsuarioListaBean.selecionarUsuario(usuario)}"
+						update=":dialog-status-form @form" />
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+	</ui:define>
+
+	<ui:define name="dialogs">
+
+		<p:dialog header="Atenção!" id="mudar-status-usuario-dialog"
+			widgetVar="mudarStatusUsuarioDialog" modal="true" resizable="false">
+			<h:form id="dialog-status-form">
+				<h:outputText
+					value="Tem certeza que deseja #{cadastroUsuarioListaBean.usuario.ativo ? 'desativar' : 'ativar'} 
+          o usuário #{cadastroUsuarioListaBean.usuario.idPatente.sigla} #{cadastroUsuarioListaBean.usuario.nomeGuerra} ?" />
+
+				<div class="vgap-30"></div>
+
+				<h:panelGroup styleClass="dialog-footer" layout="block">
+					<p:commandButton value="Sim" styleClass="btn btn-success"
+						id="confirmar"
+						action="#{cadastroUsuarioListaBean.mudarStatusAtivoUsuario}"
+						update=":formulario-usuario-lista"
+						onclick="PF('mudarStatusUsuarioDialog').hide()" />
+					<p:commandButton value="Cancelar" id="cancelar" styleClass="btn margin-l-5"
+						type="button" onclick="PF('mudarStatusUsuarioDialog').hide()" />
+				</h:panelGroup>
+
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>

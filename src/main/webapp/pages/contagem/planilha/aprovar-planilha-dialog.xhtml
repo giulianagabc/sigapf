@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<p:dialog header="Aprovar Planilha" id="aprovar-planilha-dialog"
+		widgetVar="aprovarPlanilhaDialog" modal="true" resizable="false">
+
+		<h:form id="aprovar-planilha-form">
+			<p:messages />
+
+			<p:outputLabel styleClass="text-center"
+				value="Tem certeza que deseja aprovar esta planilha?"
+				id="label_confirmacao" />
+			<div class="vgap-10"></div>
+			<p:panelGrid>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Despacho de Aprovação de Planilha:"
+							id="label_motivo" />
+					</p:column>
+					<p:column>
+						<p:inputTextarea
+							value="#{cadastroPlanilhaFormularioBean.planilha.despachoAprovacao}"
+							id="motivo-aprovacao-planilha" rows="3" cols="80" maxlength="250"
+							required="true"
+							requiredMessage="É necessário inserir o despacho de aprovação da planilha!" />
+					</p:column>
+				</p:row>
+
+			</p:panelGrid>
+
+			<div class="vgap-10"></div>
+
+			<h:panelGroup styleClass="dialog-footer" layout="block">
+				<p:commandButton value="Sim" styleClass="btn btn-success" id="sim"
+					icon="fa fa-save" validateClient="true"
+					action="#{cadastroPlanilhaFormularioBean.aprovar}"
+					update="@form :aprovar-planilha-form" />
+
+				<p:commandButton value="Não" styleClass="btn" icon="fa"
+					type="button" id="aprovar-planilha"
+					onclick="PF('aprovarPlanilhaDialog').hide()" />
+			</h:panelGroup>
+		</h:form>
+	</p:dialog>
+
+</ui:composition>

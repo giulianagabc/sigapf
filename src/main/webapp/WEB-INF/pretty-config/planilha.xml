@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+	<url-mapping id="cadastro-planilha-lista">
+		<pattern value="/contagem/planilha/" />
+		<view-id value="/pages/contagem/planilha/cadastro-planilha-lista.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="cadastro-planilha-lista-criada">
+		<pattern value="/contagem/planilha/criada/" />
+		<view-id value="/pages/contagem/planilha/cadastro-planilha-lista-criada.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="cadastro-planilha-lista-em-revisao">
+		<pattern value="/contagem/planilha/em-revisao/" />
+		<view-id value="/pages/contagem/planilha/cadastro-planilha-lista-em-revisao.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="cadastro-planilha-lista-revisada">
+		<pattern value="/contagem/planilha/revisada/" />
+		<view-id value="/pages/contagem/planilha/cadastro-planilha-lista-revisada.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="cadastro-planilha-lista-em-aprovacao">
+		<pattern value="/contagem/planilha/em-aprovacao/" />
+		<view-id value="/pages/contagem/planilha/cadastro-planilha-lista-em-aprovacao.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="cadastro-planilha-lista-aprovada">
+		<pattern value="/contagem/planilha/aprovada/" />
+		<view-id value="/pages/contagem/planilha/cadastro-planilha-lista-aprovada.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-planilha-lista-invalidada">
+		<pattern value="/contagem/planilha/invalidada/" />
+		<view-id value="/pages/contagem/planilha/cadastro-planilha-lista-invalidada.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="cadastro-planilha-formulario">
+		<pattern value="/contagem/planilha/#{id}" />
+		<view-id value="/pages/contagem/planilha/cadastro-planilha-formulario.jsf" />
+	</url-mapping>
+
+	<url-mapping id="cadastro-planilha-formulario-detalhes">
+		<pattern value="/contagem/planilha/detalhes/#{id}" />
+		<view-id value="/pages/contagem/planilha/cadastro-planilha-detalhes.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="cadastro-item-planilha-lista">
+		<pattern value="/contagem/planilha/itens/#{id}" />
+		<view-id value="/pages/contagem/planilha/itemplanilha/cadastro-item-planilha-formulario.jsf" />
+	</url-mapping>
+	
+	<url-mapping id="cadastro-item-planilha-lista-detalhes">
+		<pattern value="/contagem/planilha/itens/detalhes/#{id}" />
+		<view-id value="/pages/contagem/planilha/itemplanilha/cadastro-item-planilha-detalhes.jsf" />
+	</url-mapping>
+	
+</pretty-config>

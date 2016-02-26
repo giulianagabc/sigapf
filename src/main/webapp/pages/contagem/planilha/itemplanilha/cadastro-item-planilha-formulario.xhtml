@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/template/template.xhtml">
+
+	<ui:define name="html-title">Formulário de Itens da Planilha</ui:define>
+
+	<ui:define name="main">
+
+		<h3>Formulário de Itens da Planilha</h3>
+
+		<p:separator></p:separator>
+
+		<h:form id="formulario-planilha-revisada" prependId="false"
+			rendered="#{cadastroPlanilhaFormularioBean.planilha.estado == 'REVISADA'}">
+			<h1>
+				<span class="fa fa-times text-error">Acesso negado!</span>
+			</h1>
+			Não é possível editar os itens da planilha pois a mesma já se encontra revisada!
+		</h:form>
+
+		<h:form id="formulario-planilha-aprovada" prependId="false"
+			rendered="#{cadastroPlanilhaFormularioBean.planilha.estado == 'APROVADA'}">
+			<h1>
+				<span class="fa fa-times text-error">Acesso negado!</span>
+			</h1>
+			Não é possível editar os itens da planilha pois a mesma já se encontra aprovada!
+		</h:form>
+
+		<h:form id="formulario-planilha-invalidada" prependId="false"
+			rendered="#{cadastroPlanilhaFormularioBean.planilha.estado == 'INVALIDADA'}">
+			<h1>
+				<span class="fa fa-times text-error">Acesso negado!</span>
+			</h1>
+			Não é possível editar os itens da planilha pois a mesma já se encontra invalidada!
+		</h:form>
+
+		<h:form id="formulario-item-planilha-lista"
+			rendered="#{cadastroPlanilhaFormularioBean.planilha.estado != 'APROVADA' 
+				and cadastroPlanilhaFormularioBean.planilha.estado != 'INVALIDADA'
+				and cadastroPlanilhaFormularioBean.planilha.estado != 'REVISADA'}">
+
+			<div class="vgap-10"></div>
+
+			<p:messages id="msgs" showIcon="false" autoUpdate="true" />
+
+			<div class="vgap-10"></div>
+
+			<p:dataTable
+				value="#{cadastroItemPlanilhaFormularioBean.itensPlanilha}"
+				var="itemPlanilha" emptyMessage="#{msgs.no_records_found}"
+				editable="true" style="margin-bottom:20px" scrollable="true"
+				scrollWidth="100%" scrollHeight="230">
+				<f:facet name="header">
+						Planilha: #{cadastroItemPlanilhaFormularioBean.planilha.nome}
+       			</f:facet>
+
+				<p:ajax event="rowEdit"
+					listener="#{cadastroItemPlanilhaFormularioBean.onRowEdit}" />
+				<p:ajax event="rowEditCancel"
+					listener="#{cadastroItemPlanilhaFormularioBean.onRowCancel}" />
+
+				<p:column headerText="Nome da Função">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{itemPlanilha.nome}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{itemPlanilha.nome}" style="width:96%"
+								label="Nome da Função" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Descrição da Função">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{itemPlanilha.descricao}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{itemPlanilha.descricao}" style="width:96%"
+								label="Descrição da Função" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="AR/TR" style="width:50px">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{itemPlanilha.quantidadeRl}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{itemPlanilha.quantidadeRl}"
+								style="width:96%" label="Quantidade de AR/TR" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="TD" style="width:30px">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{itemPlanilha.quantidadeTd}" />
+						</f:facet>
+						<f:facet name="input">
+							<p:inputText value="#{itemPlanilha.quantidadeTd}"
+								style="width:96%" label="Quantidade de TD" />
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Tipo Função" style="width:50px">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{itemPlanilha.tipoFuncao.sigla}" />
+						</f:facet>
+						<f:facet name="input">
+							<h:selectOneMenu value="#{itemPlanilha.tipoFuncao}"
+								converter="jsonConverter" style="width:100%">
+								<f:selectItems
+									value="#{cadastroItemPlanilhaFormularioBean.tiposFuncoes}"
+									var="tipoFuncao" itemLabel="#{tipoFuncao.sigla}"
+									itemValue="#{tipoFuncao}" />
+							</h:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Defl." style="width:30px">
+					<p:cellEditor>
+						<f:facet name="output">
+							<h:outputText value="#{itemPlanilha.tipoDeflator.sigla}" />
+						</f:facet>
+						<f:facet name="input">
+							<h:selectOneMenu value="#{itemPlanilha.tipoDeflator}"
+								converter="jsonConverter" style="width:100%">
+								<f:selectItems
+									value="#{cadastroItemPlanilhaFormularioBean.tiposDeflatores}"
+									var="tipoDeflator" itemLabel="#{tipoDeflator.sigla}"
+									itemValue="#{tipoDeflator}" />
+							</h:selectOneMenu>
+						</f:facet>
+					</p:cellEditor>
+				</p:column>
+
+				<p:column headerText="Complex." style="width:60px"
+					disabledSelection="true">
+					<h:outputText value="#{itemPlanilha.complexidade.label}" />
+				</p:column>
+
+				<p:column headerText="PF Local" style="width:35px"
+					disabledSelection="true">
+					<h:outputText value="#{itemPlanilha.quantidadePontoFuncaoLocal}" />
+				</p:column>
+
+				<p:column headerText="PF Total" style="width:35px"
+					disabledSelection="true">
+					<h:outputText value="#{itemPlanilha.quantidadePontoFuncaoTotal}" />
+				</p:column>
+
+				<p:column style="width:32px">
+					<p:rowEditor id="edicao">
+					</p:rowEditor>
+				</p:column>
+
+				<p:column id="btn-exclusao" style="width:32px">
+					<p:commandButton id="excluir" icon="fa fa-times text-error"
+						title="Excluir" styleClass="btn btn-link"
+						action="#{cadastroItemPlanilhaFormularioBean.selecionarItemPlanilhaParaExclusao(itemPlanilha)}"
+						update=":dialog-status-form @form" />
+				</p:column>
+
+			</p:dataTable>
+
+			<p:commandButton id="inserir" icon="fa fa-plus-square margin-l-5"
+				value=" Inserir novo item" styleClass="btn btn-info"
+				action="#{cadastroItemPlanilhaFormularioBean.inserirItemPlanilha}"
+				update=":dialog-status-form @form" />
+
+			<p:commandButton id="voltar" value=" Voltar para a Planilha"
+				styleClass="margin-l-5 btn"
+				action="#{cadastroItemPlanilhaFormularioBean.voltarPlanilha}" />
+		</h:form>
+
+
+
+	</ui:define>
+
+	<ui:define name="dialogs">
+
+		<p:dialog header="Atenção!" id="excluir-item-planilha-dialog"
+			widgetVar="excluirItemPlanilhaDialog" modal="true" resizable="false">
+			<h:form id="dialog-status-form">
+				<h:outputText
+					value="Tem certeza que deseja excluir o item '#{cadastroItemPlanilhaFormularioBean.itemPlanilha.nome}' ?" />
+
+				<div class="vgap-30"></div>
+
+				<h:panelGroup styleClass="dialog-footer" layout="block">
+					<p:commandButton value="Sim" styleClass="btn btn-success"
+						id="confirmar"
+						action="#{cadastroItemPlanilhaFormularioBean.excluirItemPlanilha}"
+						update=":formulario-item-planilha-lista"
+						onclick="PF('excluirItemPlanilhaDialog').hide()" />
+					<p:commandButton value="Cancelar" id="cancelar"
+						styleClass="btn margin-l-5" type="button"
+						onclick="PF('excluirItemPlanilhaDialog').hide()" />
+				</h:panelGroup>
+
+			</h:form>
+		</p:dialog>
+	</ui:define>
+
+</ui:composition>

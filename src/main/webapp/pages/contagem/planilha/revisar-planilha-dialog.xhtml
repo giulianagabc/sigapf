@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+	<p:dialog header="Revisar Planilha" id="revisar-planilha-dialog"
+		widgetVar="revisarPlanilhaDialog" modal="true" resizable="false">
+		<h:form id="revisar-planilha-form">
+			<p:messages />
+
+			<p:outputLabel styleClass="text-center"
+				value="Tem certeza que deseja revisar esta planilha?"
+				id="label_confirmacao" />
+			<div class="vgap-10"></div>
+			<p:panelGrid>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Despacho de Revisão de Planilha:"
+							id="label_motivo" />
+					</p:column>
+					<p:column>
+						<p:inputTextarea
+							value="#{cadastroPlanilhaFormularioBean.planilha.despachoRevisao}"
+							id="motivo-revisao-planilha" rows="3" cols="80" maxlength="250"
+							required="true"
+							requiredMessage="É necessário inserir o despacho de revisão da planilha!" />
+					</p:column>
+				</p:row>
+
+			</p:panelGrid>
+
+			<div class="vgap-10"></div>
+
+			<h:panelGroup styleClass="dialog-footer" layout="block">
+				<p:commandButton value="Sim" styleClass="btn btn-success" id="sim"
+					icon="fa fa-save" validateClient="true"
+					action="#{cadastroPlanilhaFormularioBean.revisar}" 
+					update="@form :revisar-planilha-form"/>
+
+				<p:commandButton value="Não" styleClass="btn" icon="fa"
+					type="button" id="revisar-planilha"
+					onclick="PF('revisarPlanilhaDialog').hide()" />
+			</h:panelGroup>
+		</h:form>
+	</p:dialog>
+
+</ui:composition>

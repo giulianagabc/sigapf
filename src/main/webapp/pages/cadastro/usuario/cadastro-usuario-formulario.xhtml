@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/template/template.xhtml">
+
+	<ui:define name="html-title">Cadastro de Usuários</ui:define>
+
+	<ui:define name="main">
+
+		<h3>Formulário de Usuário</h3>
+
+		<p:separator></p:separator>
+
+		<div class="vgap-10"></div>
+
+		<h:form id="formulario-projeto" prependId="false">
+
+			<p:messages id="msgs" showIcon="false" autoUpdate="true" />
+
+			<p:panelGrid styleClass="formulario-sigapf">
+
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Nome Completo:" for="nomeCompleto" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroUsuarioFormularioBean.usuario.nomeCompleto}"
+							id="nomeCompleto" size="26" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Email:" for="email" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroUsuarioFormularioBean.usuario.email}"
+							id="email" size="26" />
+					</p:column>
+				</p:row>
+				
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Nome de Guerra:" for="nomeGuerra" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							value="#{cadastroUsuarioFormularioBean.usuario.nomeGuerra}"
+							id="nomeGuerra" size="26" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Patente:" for="patente" />
+					</p:column>
+					<p:column>
+						<p:selectOneMenu
+							value="#{cadastroUsuarioFormularioBean.usuario.idPatente}"
+							converter="jsonConverter">
+							<f:selectItem itemLabel="Selecionar" noSelectionOption="true"></f:selectItem>
+							<f:selectItems value="#{cadastroUsuarioFormularioBean.patentes}"
+								id="patente" var="patente" itemLabel="#{patente.sigla}"
+								itemValue="#{patente}" />
+						</p:selectOneMenu>
+					</p:column>
+					<div class="vgap-10"></div>
+				</p:row>
+
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Quadro:" for="quadro" />
+					</p:column>
+					<p:column>
+						<p:selectOneMenu
+							value="#{cadastroUsuarioFormularioBean.usuario.idQuadro}"
+							converter="jsonConverter">
+							<f:selectItem itemLabel="Selecionar" noSelectionOption="true"></f:selectItem>
+							<f:selectItems value="#{cadastroUsuarioFormularioBean.quadros}"
+								id="quadro" var="quadro" itemLabel="#{quadro.sigla}"
+								itemValue="#{quadro}" />
+						</p:selectOneMenu>
+					</p:column>
+					<div class="vgap-10"></div>
+				</p:row>
+
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Especialidade:" for="especialidade" />
+					</p:column>
+					<p:column>
+						<p:selectOneMenu
+							value="#{cadastroUsuarioFormularioBean.usuario.idEspecialidade}"
+							converter="jsonConverter">
+							<f:selectItem itemLabel="Selecionar" noSelectionOption="true"></f:selectItem>
+							<f:selectItems
+								value="#{cadastroUsuarioFormularioBean.especialidades}"
+								id="especialidade" var="especialidade"
+								itemLabel="#{especialidade.sigla}" itemValue="#{especialidade}" />
+						</p:selectOneMenu>
+					</p:column>
+					<div class="vgap-10"></div>
+				</p:row>
+
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Login:" for="login" />
+					</p:column>
+					<p:column>
+						<p:inputText
+							rendered="#{cadastroUsuarioFormularioBean.usuario.id == null}"
+							value="#{cadastroUsuarioFormularioBean.usuario.login}" size="26"
+							required="true" id="login" />
+						<h:outputText styleClass="text-align: left;"
+							rendered="#{cadastroUsuarioFormularioBean.usuario.id != null}"
+							value="#{cadastroUsuarioFormularioBean.usuario.login}" />
+					</p:column>
+				</p:row>
+
+				<p:row
+					rendered="#{cadastroUsuarioFormularioBean.usuario.id != null}">
+					<p:column>
+						<p:outputLabel value="Ativo:" for="ativo" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox
+							value="#{cadastroUsuarioFormularioBean.usuario.ativo}" id="ativo"
+							disabled="true" />
+					</p:column>
+				</p:row>
+
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Perfis:" for="perfis" />
+					</p:column>
+					<p:column>
+						<p:selectManyCheckbox required="true"
+							value="#{cadastroUsuarioFormularioBean.usuario.perfis}"
+							id="perfis" columns="1" layout="grid"
+							converter="genericEnumConverter">
+							<f:attribute name="collectionType" value="java.util.HashSet" />
+							<f:selectItems value="#{cadastroUsuarioFormularioBean.perfis}"
+								var="perfil" itemLabel="#{perfil.label}" id="name" />
+						</p:selectManyCheckbox>
+					</p:column>
+				</p:row>
+
+			</p:panelGrid>
+
+			<div class="vgap-30"></div>
+
+			<p:commandButton styleClass="btn btn-success"
+				action="#{cadastroUsuarioFormularioBean.salvar}" value=" Salvar"
+				id="salvar" update=":formulario-projeto @form" icon="fa fa-save"
+				validateClient="true" />
+
+			<p:commandButton value="Resetar senha" id="resetarSenha"
+				icon="fa fa-refresh" update="msgs" styleClass="btn btn-success margin-l-5"
+				rendered="#{cadastroUsuarioFormularioBean.usuario.id != null}"
+				action="#{cadastroUsuarioFormularioBean.resetarSenha}" />
+
+			<a href="../usuario/" id="voltar" class="btn">Voltar</a>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

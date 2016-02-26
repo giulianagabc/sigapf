@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pretty-config xmlns="http://ocpsoft.org/schema/rewrite-config-prettyfaces"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
+                      http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
+
+	<!-- LOGIN -->
+
+	<url-mapping id="/">
+		<pattern value="/" />
+		<view-id value="/pages/login/login.jsf" />
+	</url-mapping>
+
+	<url-mapping id="login">
+		<pattern value="/login/" />
+		<view-id value="/pages/login/login.jsf" />
+	</url-mapping>
+
+	<url-mapping id="login_erro">
+		<pattern value="/login/erro" />
+		<view-id value="/pages/login/login_erro.jsf" />
+	</url-mapping>
+
+	<url-mapping id="perfil">
+		<pattern value="/perfil/" />
+		<view-id value="/pages/perfil/perfil.jsf" />
+	</url-mapping>
+
+	<!-- PRINCIPAL -->
+
+	<url-mapping id="pagina-inicial">
+		<pattern value="/principal/" />
+		<view-id value="/pages/principal/principal.jsf" />
+	</url-mapping>
+
+	<!-- ERROS -->
+
+	<url-mapping id="erro-403">
+		<pattern value="/403/" />
+		<view-id value="/pages/erros/403.jsf" />
+	</url-mapping>
+
+	<url-mapping id="erro-404">
+		<pattern value="/404/" />
+		<view-id value="/pages/erros/404.jsf" />
+	</url-mapping>
+
+</pretty-config>

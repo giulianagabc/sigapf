@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/template/template.xhtml">
+
+	<ui:define name="html-title">Lista de Ordens de Serviço</ui:define>
+
+	<ui:define name="main">
+
+		<h3>Lista de Ordens de Serviço</h3>
+
+		<p:separator></p:separator>
+
+		<h:form id="formulario-os-lista">
+
+			<a id="criar" class="btn btn-success" href="../os/novo"> <span
+				class="fa fa-plus-square"></span> <span>Criar nova Ordem de
+					Serviço</span>
+			</a>
+
+			<div class="vgap-10"></div>
+
+			<p:messages id="msgs" showIcon="false" autoUpdate="true" />
+
+			<div class="vgap-10"></div>
+
+			<p:dataTable value="#{cadastroOSListaBean.oss}" var="os"
+				emptyMessage="#{msgs.no_records_found}">
+
+				<p:column headerText="Projeto" width="70" styleClass="text-center"
+					filterBy="#{os.idContrato.idProjeto.sigla}"
+					filterMatchMode="contains">
+	  			#{os.idContrato.idProjeto.sigla}
+	  			</p:column>
+
+				<p:column headerText="Contrato" width="100" styleClass="text-center"
+					filterBy="#{os.idContrato.sigla}" filterMatchMode="contains">
+	  			#{os.idContrato.sigla}
+	  			</p:column>
+
+				<p:column headerText="Sigla da OS" width="150"
+					styleClass="text-center" filterBy="#{os.sigla}"
+					filterMatchMode="contains">
+  				#{os.sigla}
+  				</p:column>
+
+				<p:column id="ativo" headerText="Ativo" width="70"
+					styleClass="text-center">
+							#{os.ativo ? 'Sim' : 'Não'}
+					</p:column>
+
+				<p:column headerText="Descrição da OS" styleClass="text-center">
+  				#{os.descricao}
+  				</p:column>
+
+				<p:column width="40" styleClass="text-center">
+					<a href="../os/detalhes/#{os.id}" id="visualiza" class="btn"> <span
+						class="fa fa-search"></span> <f:param value="#{os.id}" name="id"></f:param>
+					</a>
+				</p:column>
+
+				<p:column width="40" styleClass="text-center">
+					<a href="../os/#{os.id}" id="altera" class="btn"> <span
+						class="fa fa-pencil"></span> <f:param value="#{os.id}" name="id"></f:param>
+					</a>
+				</p:column>
+
+				<p:column id="btn-ativo" width="40" styleClass="text-center">
+					<p:commandButton id="ativar-desativar"
+						icon="fa #{os.ativo ? 'fa-times text-error' : 'fa-check text-success'}"
+						title="#{os.ativo ? 'Desativar' : 'Ativar'}"
+						styleClass="btn btn-link"
+						action="#{cadastroOSListaBean.selecionarOS(os)}"
+						update=":dialog-status-form @form" />
+				</p:column>
+
+			</p:dataTable>
+
+		</h:form>
+
+	</ui:define>
+
+	<ui:define name="dialogs">
+
+		<p:dialog header="Atenção!" id="mudar-status-os-dialog"
+			widgetVar="mudarStatusOSDialog" modal="true" resizable="false">
+			<h:form id="dialog-status-form">
+				<h:outputText
+					value="Tem certeza que deseja #{cadastroOSListaBean.os.ativo ? 'desativar' : 'ativar' } 
+          a ordem de serviço #{cadastroOSListaBean.os.sigla}?" />
+
+				<div class="vgap-30"></div>
+
+				<h:panelGroup styleClass="dialog-footer" layout="block">
+					<p:commandButton value="Sim" styleClass="btn btn-success"
+						id="confirmar" action="#{cadastroOSListaBean.mudarStatusAtivoOS}"
+						update=":formulario-os-lista"
+						onclick="PF('mudarStatusOSDialog').hide()" />
+					<p:commandButton value="Cancelar" id="cancelar"
+						styleClass="btn margin-l-5" type="button"
+						onclick="PF('mudarStatusOSDialog').hide()" />
+				</h:panelGroup>
+
+			</h:form>
+		</p:dialog>
+
+	</ui:define>
+
+
+</ui:composition>

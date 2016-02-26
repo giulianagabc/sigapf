@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	template="/resources/template/template.xhtml">
+
+	<ui:define name="html-title">Cadastro de Contratos</ui:define>
+
+	<ui:define name="main">
+
+		<h3>Formulário de Contrato</h3>
+
+		<p:separator></p:separator>
+
+		<div class="vgap-10"></div>
+
+		<h:form id="formulario-contrato" prependId="false">
+
+			<p:messages id="msgs" showIcon="false" autoUpdate="true" />
+
+			<h:panelGrid columns="2" styleClass="formulario-sigapf">
+
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Projeto:" for="projeto" />
+					</p:column>
+					<p:column>
+						<p:selectOneMenu disabled="true"
+							value="#{cadastroContratoFormularioBean.contrato.idProjeto}"
+							converter="jsonConverter">
+							<f:selectItem itemLabel="Selecionar" noSelectionOption="true"></f:selectItem>
+							<f:selectItems value="#{cadastroContratoFormularioBean.projetos}"
+								id="projeto" var="projeto" itemLabel="#{projeto.sigla}"
+								itemValue="#{projeto}" />
+						</p:selectOneMenu>
+					</p:column>
+					<div class="vgap-10"></div>
+				</p:row>
+				<br></br>
+				<p:row>
+					<p:column>
+						<p:outputLabel value="Sigla do Contrato:" for="sigla" />
+					</p:column>
+					<p:column>
+						<h:outputText
+							value="#{cadastroContratoFormularioBean.contrato.sigla}"
+							id="sigla" />
+					</p:column>
+				</p:row>
+				<br></br>
+				<p:row>
+					<div class="vgap-10"></div>
+					<p:column>
+						<p:outputLabel value="Descrição do Contrato:" for="descricao" />
+					</p:column>
+					<p:column>
+						<h:outputText
+							value="#{cadastroContratoFormularioBean.contrato.descricao}"
+							rows="10" cols="50"
+							completeMethod="#{inputTextareaView.completeArea}" id="descricao" />
+					</p:column>
+				</p:row>
+				<br></br>
+				<p:row>
+					<div class="vgap-10"></div>
+					<p:column>
+						<p:outputLabel value="Ativo:" for="ativo" />
+					</p:column>
+					<p:column>
+						<p:selectBooleanCheckbox disabled="true"
+							value="#{cadastroContratoFormularioBean.contrato.ativo}"
+							id="ativo" />
+					</p:column>
+				</p:row>
+
+			</h:panelGrid>
+
+			<div class="vgap-30"></div>
+
+			<a href="../../contrato/" id="voltar" class="btn">Voltar</a>
+
+		</h:form>
+
+	</ui:define>
+
+</ui:composition>

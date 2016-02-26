@@ -10,11 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import br.fatec.sigapf.dao.EspecialidadeDAO;
-import br.fatec.sigapf.dao.PatenteDAO;
-import br.fatec.sigapf.dao.QuadroDAO;
-import br.fatec.sigapf.dao.UsuarioDAO;
-import br.fatec.sigapf.dao.historico.HistoricoUsuarioDAO;
 import br.fatec.sigapf.dominio.Especialidade;
 import br.fatec.sigapf.dominio.Patente;
 import br.fatec.sigapf.dominio.Perfil;
@@ -24,21 +19,26 @@ import br.fatec.sigapf.dominio.historico.HistoricoUsuario;
 import br.fatec.sigapf.framework.context.AuthenticationContext;
 import br.fatec.sigapf.framework.faces.ManagedBeanUtils;
 import br.fatec.sigapf.framework.faces.Mensagem;
+import br.fatec.sigapf.service.EspecialidadeService;
+import br.fatec.sigapf.service.PatenteService;
+import br.fatec.sigapf.service.QuadroService;
+import br.fatec.sigapf.service.UsuarioService;
+import br.fatec.sigapf.service.historico.HistoricoUsuarioService;
 
 @Scope(value = "view")
 @Controller(value = "cadastroUsuarioFormularioBean")
 public class CadastroUsuarioFormularioBean {
 
 	@Autowired
-	private UsuarioDAO usuarioDAO;
+	private UsuarioService usuarioService;
 	@Autowired
-	private HistoricoUsuarioDAO historicoUsuarioDAO;
+	private HistoricoUsuarioService historicoUsuarioService;
 	@Autowired
-	private EspecialidadeDAO especialidadeDAO;
+	private EspecialidadeService especialidadeService;
 	@Autowired
-	private PatenteDAO patenteDAO;
+	private PatenteService patenteService;
 	@Autowired
-	private QuadroDAO quadroDAO;
+	private QuadroService quadroService;
 	@Autowired
 	private AuthenticationContext auth;
 	private Usuario usuarioLogado;
@@ -54,31 +54,32 @@ public class CadastroUsuarioFormularioBean {
 	@PostConstruct
 	public void init() {
 		String id = ManagedBeanUtils.obterParametroRequest("id");
-		usuario = "novo".equals(id) ? new Usuario() : usuarioDAO
+		usuario = "novo".equals(id) ? new Usuario() : usuarioService
 				.obterPorId(Integer.valueOf(id));
 		setPerfis(new ArrayList<Perfil>(Arrays.asList(Perfil.values())));
 		getPerfis().remove(Perfil.PERFIL_USUARIO);
-		usuarioLogado = usuarioDAO.obterPorId(auth.getUsuarioLogado().getId());
+		usuarioLogado = usuarioService.obterPorId(auth.getUsuarioLogado()
+				.getId());
 		listarPatentes();
 		listarQuadros();
 		listarEspecialidades();
 	}
 
 	public void listarEspecialidades() {
-		especialidades = especialidadeDAO.listarEspecialidadesAtivas();
+		especialidades = especialidadeService.listarEspecialidadesAtivas();
 	}
 
 	public void listarPatentes() {
-		patentes = patenteDAO.listarPatentesAtivas();
+		patentes = patenteService.listarPatentesAtivas();
 	}
 
 	public void listarQuadros() {
-		quadros = quadroDAO.listarQuadrosAtivos();
+		quadros = quadroService.listarQuadrosAtivos();
 	}
 
 	public void salvar() {
-		usuarioDAO.gerarPrimeiraSenha(usuario);
-		Usuario usuarioSalvo = usuarioDAO.salvar(usuario);
+		usuarioService.gerarPrimeiraSenha(usuario);
+		Usuario usuarioSalvo = usuarioService.salvar(usuario);
 		Mensagem.informacao("Usuário salvo com sucesso!");
 		ManagedBeanUtils.redirecionar("/cadastro/usuario/");
 		salvarHistorico(usuarioSalvo);
@@ -86,11 +87,11 @@ public class CadastroUsuarioFormularioBean {
 
 	public void salvarHistorico(Usuario usuarioSalvo) {
 		historicoUsuario = new HistoricoUsuario(usuarioSalvo, usuarioLogado);
-		historicoUsuarioDAO.salvar(historicoUsuario);
+		historicoUsuarioService.salvar(historicoUsuario);
 	}
 
 	public void resetarSenha() {
-		usuarioDAO.resetarSenha(usuario.getId());
+		usuarioService.resetarSenha(usuario.getId());
 		Mensagem.informacao("Senha resetada com sucesso!");
 	}
 

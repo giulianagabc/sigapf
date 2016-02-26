@@ -8,27 +8,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import br.fatec.sigapf.dao.ContratoDAO;
-import br.fatec.sigapf.dao.OSDAO;
 import br.fatec.sigapf.dominio.Contrato;
 import br.fatec.sigapf.framework.faces.ManagedBeanUtils;
 import br.fatec.sigapf.framework.faces.Mensagem;
+import br.fatec.sigapf.service.ContratoService;
+import br.fatec.sigapf.service.OSService;
 
 @Scope(value = "view")
 @Service(value = "cadastroContratoListaBean")
 public class CadastroContratoListaBean {
 
 	@Autowired
-	private ContratoDAO contratoDAO;
+	private ContratoService contratoService;
 	@Autowired
-	private OSDAO osDAO;
+	private OSService osService;
 
 	private Contrato contrato;
 	private List<Contrato> contratos;
 
 	@PostConstruct
 	public void listar() {
-		contratos = contratoDAO.listar();
+		contratos = contratoService.listar();
 	}
 
 	public void selecionarContrato(Contrato contratoEdicao) {
@@ -37,16 +37,17 @@ public class CadastroContratoListaBean {
 	}
 
 	public void mudarStatusAtivoContrato() {
-		if (contratoDAO.mudarStatusAtivoContrato(contrato.getId(),
+		if (contratoService.mudarStatusAtivoContrato(contrato.getId(),
 				!contrato.isAtivo())) {
-			osDAO.mudarStatusAtivoOSPorContrato(contrato, !contrato.isAtivo());
-			contratos = contratoDAO.listar();
+			osService.mudarStatusAtivoOSPorContrato(contrato,
+					!contrato.isAtivo());
+			contratos = contratoService.listar();
 			String message = "Contrato status com sucesso";
 			Mensagem.informacao(message.replace("status",
 					contrato.isAtivo() ? "desativado" : "ativado"));
 			ManagedBeanUtils.hideDialog("mudarStatusContratoDialog");
 		} else {
-			contratos = contratoDAO.listar();
+			contratos = contratoService.listar();
 			String message = "Para status esse Contrato primeiro ative o Projeto correspondente.";
 			Mensagem.erro(message.replace("status",
 					contrato.isAtivo() ? "desativar" : "ativar"));

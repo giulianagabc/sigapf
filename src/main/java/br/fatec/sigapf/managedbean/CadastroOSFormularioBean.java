@@ -8,10 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import br.fatec.sigapf.dao.ContratoDAO;
-import br.fatec.sigapf.dao.OSDAO;
-import br.fatec.sigapf.dao.UsuarioDAO;
-import br.fatec.sigapf.dao.historico.HistoricoOSDAO;
 import br.fatec.sigapf.dominio.Contrato;
 import br.fatec.sigapf.dominio.OS;
 import br.fatec.sigapf.dominio.Usuario;
@@ -19,19 +15,23 @@ import br.fatec.sigapf.dominio.historico.HistoricoOS;
 import br.fatec.sigapf.framework.context.AuthenticationContext;
 import br.fatec.sigapf.framework.faces.ManagedBeanUtils;
 import br.fatec.sigapf.framework.faces.Mensagem;
+import br.fatec.sigapf.service.ContratoService;
+import br.fatec.sigapf.service.OSService;
+import br.fatec.sigapf.service.UsuarioService;
+import br.fatec.sigapf.service.historico.HistoricoOSService;
 
 @Scope(value = "view")
 @Controller(value = "cadastroOSFormularioBean")
 public class CadastroOSFormularioBean {
 
 	@Autowired
-	private OSDAO osDAO;
+	private OSService osService;
 	@Autowired
-	private HistoricoOSDAO historicoOSDAO;
+	private HistoricoOSService historicoOSService;
 	@Autowired
-	private ContratoDAO contratoDAO;
+	private ContratoService contratoService;
 	@Autowired
-	private UsuarioDAO usuarioDAO;
+	private UsuarioService usuarioService;
 	@Autowired
 	private AuthenticationContext auth;
 	private Usuario usuarioLogado;
@@ -43,18 +43,19 @@ public class CadastroOSFormularioBean {
 	@PostConstruct
 	public void init() {
 		String id = ManagedBeanUtils.obterParametroRequest("id");
-		os = "novo".equals(id) ? new OS() : osDAO.obterPorId(Integer
+		os = "novo".equals(id) ? new OS() : osService.obterPorId(Integer
 				.valueOf(id));
-		usuarioLogado = usuarioDAO.obterPorId(auth.getUsuarioLogado().getId());
+		usuarioLogado = usuarioService.obterPorId(auth.getUsuarioLogado()
+				.getId());
 		listarContratos();
 	}
 
 	public void listarContratos() {
-		contratos = contratoDAO.listarAtivos();
+		contratos = contratoService.listarAtivos();
 	}
 
 	public void salvar() {
-		OS osSalva = osDAO.salvar(os);
+		OS osSalva = osService.salvar(os);
 		Mensagem.informacao("Ordem de Serviço salva com sucesso!");
 		ManagedBeanUtils.redirecionar("/cadastro/os/");
 		salvarHistorico(osSalva);
@@ -62,7 +63,7 @@ public class CadastroOSFormularioBean {
 
 	public void salvarHistorico(OS osSalva) {
 		historicoOS = new HistoricoOS(osSalva, usuarioLogado);
-		historicoOSDAO.salvar(historicoOS);
+		historicoOSService.salvar(historicoOS);
 	}
 
 	public List<Contrato> getContratos() {

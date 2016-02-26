@@ -10,11 +10,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import br.fatec.sigapf.dao.UsuarioDAO;
 import br.fatec.sigapf.dominio.Usuario;
 import br.fatec.sigapf.framework.context.AuthenticationContext;
 import br.fatec.sigapf.framework.faces.ManagedBeanUtils;
 import br.fatec.sigapf.framework.faces.Mensagem;
+import br.fatec.sigapf.service.UsuarioService;
 
 @Scope(value = "session")
 @Service(value = "editarPerfilBean")
@@ -25,7 +25,7 @@ public class EditarPerfilBean implements Serializable {
 	private static final String TROCAR_SENHA_DIALOG = "trocarSenhaDialog";
 
 	@Autowired
-	private UsuarioDAO usuarioDAO;
+	private UsuarioService usuarioService;
 	@Autowired
 	private AuthenticationContext authenticationContext;
 
@@ -36,7 +36,7 @@ public class EditarPerfilBean implements Serializable {
 
 	@PostConstruct
 	private void init() {
-		usuario = usuarioDAO.obterPorId(authenticationContext
+		usuario = usuarioService.obterPorId(authenticationContext
 				.getUsuarioLogado().getId());
 		verificarRedirecionamento();
 	}
@@ -49,12 +49,12 @@ public class EditarPerfilBean implements Serializable {
 	}
 
 	public void salvar() {
-		usuario = usuarioDAO.salvar(usuario);
+		usuario = usuarioService.salvar(usuario);
 		Mensagem.informacao("Perfil atualizado com sucesso!");
 	}
 
 	public void atualizarSenha() throws IOException {
-		usuarioDAO.validacaoAtualizarSenha(velhaSenha, novaSenha,
+		usuarioService.validacaoAtualizarSenha(velhaSenha, novaSenha,
 				repeticaoNovaSenha, usuario.getId());
 		Mensagem.informacao("Senha atualizada com sucesso!");
 		ManagedBeanUtils.hideDialog(TROCAR_SENHA_DIALOG);

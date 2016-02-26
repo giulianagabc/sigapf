@@ -59,4 +59,5 @@ public class ContratoServiceImpl implements ContratoService {
 			Integer id) {
 		return contratoDAO.verificarUnicidade(idProjeto, sigla, id);
 	}
+
 }

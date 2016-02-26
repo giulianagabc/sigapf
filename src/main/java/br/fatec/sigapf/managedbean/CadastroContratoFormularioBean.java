@@ -8,10 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import br.fatec.sigapf.dao.ContratoDAO;
-import br.fatec.sigapf.dao.ProjetoDAO;
-import br.fatec.sigapf.dao.UsuarioDAO;
-import br.fatec.sigapf.dao.historico.HistoricoContratoDAO;
 import br.fatec.sigapf.dominio.Contrato;
 import br.fatec.sigapf.dominio.Projeto;
 import br.fatec.sigapf.dominio.Usuario;
@@ -19,19 +15,23 @@ import br.fatec.sigapf.dominio.historico.HistoricoContrato;
 import br.fatec.sigapf.framework.context.AuthenticationContext;
 import br.fatec.sigapf.framework.faces.ManagedBeanUtils;
 import br.fatec.sigapf.framework.faces.Mensagem;
+import br.fatec.sigapf.service.ContratoService;
+import br.fatec.sigapf.service.ProjetoService;
+import br.fatec.sigapf.service.UsuarioService;
+import br.fatec.sigapf.service.historico.HistoricoContratoService;
 
 @Scope(value = "view")
 @Controller(value = "cadastroContratoFormularioBean")
 public class CadastroContratoFormularioBean {
 
 	@Autowired
-	private ContratoDAO contratoDAO;
+	private ContratoService contratoService;
 	@Autowired
-	private HistoricoContratoDAO historicoContratoDAO;
+	private HistoricoContratoService historicoContratoService;
 	@Autowired
-	private ProjetoDAO projetoDAO;
+	private ProjetoService projetoService;
 	@Autowired
-	private UsuarioDAO usuarioDAO;
+	private UsuarioService usuarioService;
 	@Autowired
 	private AuthenticationContext auth;
 
@@ -44,18 +44,19 @@ public class CadastroContratoFormularioBean {
 	@PostConstruct
 	public void init() {
 		String id = ManagedBeanUtils.obterParametroRequest("id");
-		contrato = "novo".equals(id) ? new Contrato() : contratoDAO
+		contrato = "novo".equals(id) ? new Contrato() : contratoService
 				.obterPorId(Integer.valueOf(id));
-		usuarioLogado = usuarioDAO.obterPorId(auth.getUsuarioLogado().getId());
+		usuarioLogado = usuarioService.obterPorId(auth.getUsuarioLogado()
+				.getId());
 		listarProjetos();
 	}
 
 	public void listarProjetos() {
-		projetos = projetoDAO.listarAtivos();
+		projetos = projetoService.listarAtivos();
 	}
 
 	public void salvar() {
-		Contrato contratoSalvo = contratoDAO.salvar(contrato);
+		Contrato contratoSalvo = contratoService.salvar(contrato);
 		Mensagem.informacao("Contrato salvo com sucesso!");
 		ManagedBeanUtils.redirecionar("/cadastro/contrato/");
 		salvarHistorico(contratoSalvo);
@@ -63,7 +64,7 @@ public class CadastroContratoFormularioBean {
 
 	public void salvarHistorico(Contrato contratoSalvo) {
 		historicoContrato = new HistoricoContrato(contratoSalvo, usuarioLogado);
-		historicoContratoDAO.salvar(historicoContrato);
+		historicoContratoService.salvar(historicoContrato);
 	}
 
 	public List<Projeto> getProjetos() {

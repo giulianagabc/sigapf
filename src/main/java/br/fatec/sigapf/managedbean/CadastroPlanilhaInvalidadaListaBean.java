@@ -8,22 +8,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import br.fatec.sigapf.dao.PlanilhaDAO;
 import br.fatec.sigapf.dominio.Planilha;
+import br.fatec.sigapf.service.PlanilhaService;
 
 @Scope(value = "view")
 @Service(value = "cadastroPlanilhaInvalidadaListaBean")
 public class CadastroPlanilhaInvalidadaListaBean {
 
 	@Autowired
-	private PlanilhaDAO planilhaDAO;
+	private PlanilhaService planilhaService;
 
 	private Planilha planilha;
 	private List<Planilha> planilhas;
 
 	@PostConstruct
 	public void listar() {
-		planilhas = planilhaDAO.listarInvalidadas();
+		planilhas = planilhaService.listarInvalidadas();
 	}
 
 	public Planilha getPlanilha() {

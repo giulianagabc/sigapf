@@ -9,13 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import br.fatec.sigapf.dao.ItemPlanilhaDAO;
-import br.fatec.sigapf.dao.PlanilhaDAO;
-import br.fatec.sigapf.dao.TipoDeflatorDAO;
-import br.fatec.sigapf.dao.TipoFuncaoDAO;
-import br.fatec.sigapf.dao.UsuarioDAO;
-import br.fatec.sigapf.dao.historico.HistoricoItemPlanilhaDAO;
-import br.fatec.sigapf.dominio.ComplexidadeItemPlanilha;
 import br.fatec.sigapf.dominio.ItemPlanilha;
 import br.fatec.sigapf.dominio.Planilha;
 import br.fatec.sigapf.dominio.TipoDeflator;
@@ -25,23 +18,29 @@ import br.fatec.sigapf.dominio.historico.HistoricoItemPlanilha;
 import br.fatec.sigapf.framework.context.AuthenticationContext;
 import br.fatec.sigapf.framework.faces.ManagedBeanUtils;
 import br.fatec.sigapf.framework.faces.Mensagem;
+import br.fatec.sigapf.service.ItemPlanilhaService;
+import br.fatec.sigapf.service.PlanilhaService;
+import br.fatec.sigapf.service.TipoDeflatorService;
+import br.fatec.sigapf.service.TipoFuncaoService;
+import br.fatec.sigapf.service.UsuarioService;
+import br.fatec.sigapf.service.historico.HistoricoItemPlanilhaService;
 
 @Scope(value = "view")
 @Controller(value = "cadastroItemPlanilhaFormularioBean")
 public class CadastroItemPlanilhaFormularioBean {
 
 	@Autowired
-	private ItemPlanilhaDAO itemPlanilhaDAO;
+	private ItemPlanilhaService itemPlanilhaService;
 	@Autowired
-	private HistoricoItemPlanilhaDAO historicoItemPlanilhaDAO;
+	private HistoricoItemPlanilhaService historicoItemPlanilhaService;
 	@Autowired
-	private PlanilhaDAO planilhaDAO;
+	private PlanilhaService planilhaService;
 	@Autowired
-	private TipoDeflatorDAO tipoDeflatorDAO;
+	private TipoDeflatorService tipoDeflatorService;
 	@Autowired
-	private TipoFuncaoDAO tipoFuncaoDAO;
+	private TipoFuncaoService tipoFuncaoService;
 	@Autowired
-	private UsuarioDAO usuarioDAO;
+	private UsuarioService usuarioService;
 	@Autowired
 	private AuthenticationContext auth;
 	private Usuario usuarioLogado;
@@ -57,23 +56,24 @@ public class CadastroItemPlanilhaFormularioBean {
 	@PostConstruct
 	public void init() {
 		String id = ManagedBeanUtils.obterParametroRequest("id");
-		planilha = planilhaDAO.obterPorId(Integer.valueOf(id));
-		usuarioLogado = usuarioDAO.obterPorId(auth.getUsuarioLogado().getId());
+		planilha = planilhaService.obterPorId(Integer.valueOf(id));
+		usuarioLogado = usuarioService.obterPorId(auth.getUsuarioLogado()
+				.getId());
 		listarItensPlanilha();
 		listarTiposDeflatores();
 		listarTiposFuncoes();
 	}
 
 	public void listarItensPlanilha() {
-		itensPlanilha = itemPlanilhaDAO.listar(planilha);
+		itensPlanilha = itemPlanilhaService.listar(planilha);
 	}
 
 	public void listarTiposDeflatores() {
-		tiposDeflatores = tipoDeflatorDAO.listarTiposDeflatoresAtivos();
+		tiposDeflatores = tipoDeflatorService.listarTiposDeflatoresAtivos();
 	}
 
 	public void listarTiposFuncoes() {
-		tiposFuncoes = tipoFuncaoDAO.listarTiposFuncoesAtivos();
+		tiposFuncoes = tipoFuncaoService.listarTiposFuncoesAtivos();
 	}
 
 	public void selecionarItemPlanilhaParaExclusao(
@@ -83,7 +83,7 @@ public class CadastroItemPlanilhaFormularioBean {
 	}
 
 	public void excluirItemPlanilha() {
-		ItemPlanilha itemPlanilhaExcluido = itemPlanilhaDAO
+		ItemPlanilha itemPlanilhaExcluido = itemPlanilhaService
 				.excluirItemPlanilha(itemPlanilha.getId());
 		salvarHistorico(itemPlanilhaExcluido);
 		listarItensPlanilha();
@@ -92,140 +92,32 @@ public class CadastroItemPlanilhaFormularioBean {
 	}
 
 	public void inserirItemPlanilha() {
-		ItemPlanilha itemPlanilhaEmBranco = new ItemPlanilha();
-		itemPlanilhaEmBranco.setNome(" ");
-		itemPlanilhaEmBranco.setDescricao(" ");
-		itemPlanilhaEmBranco.setQuantidadeTd(0);
-		itemPlanilhaEmBranco.setQuantidadeRl(0);
-		itemPlanilhaEmBranco.setTipoDeflator(tipoDeflatorDAO.obterPorId(1));
-		itemPlanilhaEmBranco.setTipoFuncao(tipoFuncaoDAO.obterPorId(1));
-		itemPlanilhaEmBranco.setIdPlanilha(planilha);
-		salvar(itemPlanilhaEmBranco);
+		ItemPlanilha itemPlanilhaInserido = itemPlanilhaService
+				.inserirItemPlanilha(planilha);
+		listarItensPlanilha();
+		salvarHistorico(itemPlanilhaInserido);
+		Mensagem.informacao("Item de Planilha inserido com sucesso!");
 	}
 
 	public void salvar(ItemPlanilha itemPlanilha) {
 		ItemPlanilha itemPlanilhaVerificado = verificarPontuacao(itemPlanilha);
-		ItemPlanilha itemPlanilhaSalvo = itemPlanilhaDAO
+		ItemPlanilha itemPlanilhaSalvo = itemPlanilhaService
 				.salvar(itemPlanilhaVerificado);
 		listarItensPlanilha();
 		salvarHistorico(itemPlanilhaSalvo);
-		if (itemPlanilhaVerificado.getId() != null) {
-			Mensagem.informacao("Item de Planilha salvo com sucesso!");
-		} else {
-			Mensagem.informacao("Item de Planilha inserido com sucesso!");
-		}
+		Mensagem.informacao("Item de Planilha salvo com sucesso!");
 	}
 
 	public void salvarHistorico(ItemPlanilha itemPlanilhaSalvo) {
 		historicoItemPlanilha = new HistoricoItemPlanilha(itemPlanilhaSalvo,
 				usuarioLogado);
-		historicoItemPlanilhaDAO.salvar(historicoItemPlanilha);
+		historicoItemPlanilhaService.salvar(historicoItemPlanilha);
 	}
 
-	// TODO - valor do deflator para multiplicar na qtde pf total
-	// TODO - ITENS DE DADOS
 	public ItemPlanilha verificarPontuacao(
 			ItemPlanilha itemPlanilhaParaVerificacao) {
-		/* Método NESMA - Estimativa */
-		if ((itemPlanilhaParaVerificacao.getQuantidadeRl() == 0)
-				|| (itemPlanilhaParaVerificacao.getQuantidadeTd() == 0)) {
-			if (itemPlanilhaParaVerificacao.getTipoFuncao().getSigla()
-					.equals("ALI")) {
-				itemPlanilhaParaVerificacao
-						.setComplexidade(ComplexidadeItemPlanilha.BAIXA);
-				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoLocal(7);
-				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoTotal(7);
-			}
-			if (itemPlanilhaParaVerificacao.getTipoFuncao().getSigla()
-					.equals("AIE")) {
-				itemPlanilhaParaVerificacao
-						.setComplexidade(ComplexidadeItemPlanilha.BAIXA);
-				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoLocal(5);
-				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoTotal(5);
-			}
-			if (itemPlanilhaParaVerificacao.getTipoFuncao().getSigla()
-					.equals("SE")) {
-				itemPlanilhaParaVerificacao
-						.setComplexidade(ComplexidadeItemPlanilha.MEDIA);
-				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoLocal(5);
-				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoTotal(5);
-			}
-			if ((itemPlanilhaParaVerificacao.getTipoFuncao().getSigla()
-					.equals("CE"))
-					|| (itemPlanilhaParaVerificacao.getTipoFuncao().getSigla()
-							.equals("EE"))) {
-				itemPlanilhaParaVerificacao
-						.setComplexidade(ComplexidadeItemPlanilha.MEDIA);
-				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoLocal(4);
-				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoTotal(4);
-			}
-		} else /* Método IFPUG - Detalhada */{
-			if (itemPlanilhaParaVerificacao.getTipoFuncao().getSigla()
-					.equals("ALI")) {
-				if (itemPlanilhaParaVerificacao.getQuantidadeRl() < 2) {
-
-				}
-				if ((itemPlanilhaParaVerificacao.getQuantidadeRl() >= 2)
-						|| (itemPlanilhaParaVerificacao.getQuantidadeRl() <= 5)) {
-
-				}
-				if (itemPlanilhaParaVerificacao.getQuantidadeRl() > 5) {
-
-				}
-			}
-			if (itemPlanilhaParaVerificacao.getTipoFuncao().getSigla()
-					.equals("AIE")) {
-				if (itemPlanilhaParaVerificacao.getQuantidadeRl() < 2) {
-
-				}
-				if ((itemPlanilhaParaVerificacao.getQuantidadeRl() >= 2)
-						|| (itemPlanilhaParaVerificacao.getQuantidadeRl() <= 5)) {
-
-				}
-				if (itemPlanilhaParaVerificacao.getQuantidadeRl() > 5) {
-
-				}
-			}
-			if (itemPlanilhaParaVerificacao.getTipoFuncao().getSigla()
-					.equals("EE")) {
-				if (itemPlanilhaParaVerificacao.getQuantidadeRl() < 2) {
-
-				}
-				if (itemPlanilhaParaVerificacao.getQuantidadeRl() == 2) {
-
-				}
-				if (itemPlanilhaParaVerificacao.getQuantidadeRl() > 2) {
-
-				}
-			}
-			if (itemPlanilhaParaVerificacao.getTipoFuncao().getSigla()
-					.equals("CE")) {
-				if (itemPlanilhaParaVerificacao.getQuantidadeRl() < 2) {
-
-				}
-				if ((itemPlanilhaParaVerificacao.getQuantidadeRl() >= 2)
-						|| (itemPlanilhaParaVerificacao.getQuantidadeRl() <= 3)) {
-
-				}
-				if (itemPlanilhaParaVerificacao.getQuantidadeRl() > 3) {
-
-				}
-			}
-			if (itemPlanilhaParaVerificacao.getTipoFuncao().getSigla()
-					.equals("SE")) {
-				if (itemPlanilhaParaVerificacao.getQuantidadeRl() < 2) {
-
-				}
-				if ((itemPlanilhaParaVerificacao.getQuantidadeRl() >= 2)
-						|| (itemPlanilhaParaVerificacao.getQuantidadeRl() <= 3)) {
-
-				}
-				if (itemPlanilhaParaVerificacao.getQuantidadeRl() > 3) {
-
-				}
-			}
-		}
-		return itemPlanilhaParaVerificacao;
+		return itemPlanilhaService
+				.verificarPontuacao(itemPlanilhaParaVerificacao);
 	}
 
 	// Método criado para implementar a edição de tabela do Primefaces

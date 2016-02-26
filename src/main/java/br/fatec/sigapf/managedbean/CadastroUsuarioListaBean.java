@@ -8,21 +8,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import br.fatec.sigapf.dao.UsuarioDAO;
-import br.fatec.sigapf.dao.historico.HistoricoUsuarioDAO;
 import br.fatec.sigapf.dominio.Usuario;
-import br.fatec.sigapf.dominio.historico.HistoricoUsuario;
 import br.fatec.sigapf.framework.faces.ManagedBeanUtils;
 import br.fatec.sigapf.framework.faces.Mensagem;
+import br.fatec.sigapf.service.UsuarioService;
+import br.fatec.sigapf.service.historico.HistoricoUsuarioService;
 
 @Scope(value = "view")
 @Service(value = "cadastroUsuarioListaBean")
 public class CadastroUsuarioListaBean {
 
 	@Autowired
-	private UsuarioDAO usuarioDAO;
+	private UsuarioService usuarioService;
 	@Autowired
-	private HistoricoUsuarioDAO historicoUsuarioDAO;
+	private HistoricoUsuarioService historicoUsuarioService;
 
 	private List<Usuario> usuarios;
 	private Usuario usuario;
@@ -30,7 +29,7 @@ public class CadastroUsuarioListaBean {
 
 	@PostConstruct
 	public void listar() {
-		usuarios = usuarioDAO.listar();
+		usuarios = usuarioService.listar();
 	}
 
 	public void selecionarUsuario(Usuario usuarioEdicao) {
@@ -39,14 +38,15 @@ public class CadastroUsuarioListaBean {
 	}
 
 	public void mudarStatusAtivoUsuario() {
-		usuarioDAO.mudarStatusAtivoUsuario(usuario.getId(), !usuario.isAtivo());
-		usuarios = usuarioDAO.listar();
+		usuarioService.mudarStatusAtivoUsuario(usuario.getId(),
+				!usuario.isAtivo());
+		usuarios = usuarioService.listar();
 		String message = "Usuário status com sucesso";
 		Mensagem.informacao(message.replace("status",
 				usuario.isAtivo() ? "desativado" : "ativado"));
 		ManagedBeanUtils.hideDialog("mudarStatusUsuarioDialog");
 	}
-	
+
 	public List<Usuario> getUsuarios() {
 		return usuarios;
 	}

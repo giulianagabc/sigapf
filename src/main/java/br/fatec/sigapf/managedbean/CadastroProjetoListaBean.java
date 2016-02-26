@@ -8,30 +8,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
-import br.fatec.sigapf.dao.ContratoDAO;
-import br.fatec.sigapf.dao.OSDAO;
-import br.fatec.sigapf.dao.ProjetoDAO;
 import br.fatec.sigapf.dominio.Projeto;
 import br.fatec.sigapf.framework.faces.ManagedBeanUtils;
 import br.fatec.sigapf.framework.faces.Mensagem;
+import br.fatec.sigapf.service.ContratoService;
+import br.fatec.sigapf.service.OSService;
+import br.fatec.sigapf.service.ProjetoService;
 
 @Scope(value = "view")
 @Service(value = "cadastroProjetoListaBean")
 public class CadastroProjetoListaBean {
 
 	@Autowired
-	private ProjetoDAO projetoDAO;
+	private ProjetoService projetoService;
 	@Autowired
-	private ContratoDAO contratoDAO;
+	private ContratoService contratoService;
 	@Autowired
-	private OSDAO osDAO;
-	
+	private OSService osService;
+
 	private Projeto projeto;
 	private List<Projeto> projetos;
 
 	@PostConstruct
 	public void listar() {
-		projetos = projetoDAO.listar();
+		projetos = projetoService.listar();
 	}
 
 	public void selecionarProjeto(Projeto projetoEdicao) {
@@ -40,10 +40,12 @@ public class CadastroProjetoListaBean {
 	}
 
 	public void mudarStatusAtivoProjeto() {
-		projetoDAO.mudarStatusAtivoProjeto(projeto.getId(), !projeto.isAtivo());
-		contratoDAO.mudarStatusAtivoContratoPorProjeto(projeto, !projeto.isAtivo());
-		osDAO.mudarStatusAtivoOSPorProjeto(projeto, !projeto.isAtivo());
-		projetos = projetoDAO.listar();
+		projetoService.mudarStatusAtivoProjeto(projeto.getId(),
+				!projeto.isAtivo());
+		contratoService.mudarStatusAtivoContratoPorProjeto(projeto,
+				!projeto.isAtivo());
+		osService.mudarStatusAtivoOSPorProjeto(projeto, !projeto.isAtivo());
+		projetos = projetoService.listar();
 		String message = "Projeto status com sucesso";
 		Mensagem.informacao(message.replace("status",
 				projeto.isAtivo() ? "desativado" : "ativado"));

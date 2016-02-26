@@ -1,6 +1,5 @@
 package br.fatec.sigapf.managedbean;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -9,12 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import br.fatec.sigapf.dao.OSDAO;
-import br.fatec.sigapf.dao.PlanilhaDAO;
-import br.fatec.sigapf.dao.TipoContagemDAO;
-import br.fatec.sigapf.dao.UsuarioDAO;
-import br.fatec.sigapf.dao.historico.HistoricoPlanilhaDAO;
-import br.fatec.sigapf.dominio.EstadoPlanilha;
 import br.fatec.sigapf.dominio.OS;
 import br.fatec.sigapf.dominio.Planilha;
 import br.fatec.sigapf.dominio.TipoContagem;
@@ -22,24 +15,28 @@ import br.fatec.sigapf.dominio.Usuario;
 import br.fatec.sigapf.dominio.historico.HistoricoPlanilha;
 import br.fatec.sigapf.framework.context.AuthenticationContext;
 import br.fatec.sigapf.framework.faces.ManagedBeanUtils;
-import br.fatec.sigapf.framework.faces.Mensagem;
+import br.fatec.sigapf.service.OSService;
+import br.fatec.sigapf.service.PlanilhaService;
+import br.fatec.sigapf.service.TipoContagemService;
+import br.fatec.sigapf.service.UsuarioService;
+import br.fatec.sigapf.service.historico.HistoricoPlanilhaService;
 
 @Scope(value = "view")
 @Controller(value = "cadastroPlanilhaFormularioBean")
 public class CadastroPlanilhaFormularioBean {
 
 	@Autowired
-	private PlanilhaDAO planilhaDAO;
+	private PlanilhaService planilhaService;
 	@Autowired
-	private HistoricoPlanilhaDAO historicoPlanilhaDAO;
+	private HistoricoPlanilhaService historicoPlanilhaService;
 	@Autowired
-	private OSDAO osDAO;
+	private OSService osService;
 	@Autowired
-	private TipoContagemDAO tipoContagemDAO;
+	private TipoContagemService tipoContagemService;
 	@Autowired
 	private AuthenticationContext auth;
 	@Autowired
-	private UsuarioDAO usuarioDAO;
+	private UsuarioService usuarioService;
 
 	private Planilha planilha;
 	private HistoricoPlanilha historicoPlanilha;
@@ -50,54 +47,41 @@ public class CadastroPlanilhaFormularioBean {
 	@PostConstruct
 	public void init() {
 		String id = ManagedBeanUtils.obterParametroRequest("id");
-		planilha = "novo".equals(id) ? new Planilha() : planilhaDAO
+		planilha = "novo".equals(id) ? new Planilha() : planilhaService
 				.obterPorId(Integer.valueOf(id));
-		usuarioLogado = usuarioDAO.obterPorId(auth.getUsuarioLogado().getId());
+		usuarioLogado = usuarioService.obterPorId(auth.getUsuarioLogado()
+				.getId());
 		listarOss();
 		listarTiposContagens();
 	}
 
 	public void listarOss() {
-		oss = osDAO.listarAtivos();
+		oss = osService.listarAtivos();
 	}
 
 	public void listarTiposContagens() {
-		tiposContagens = tipoContagemDAO.listarTiposContagens();
+		tiposContagens = tipoContagemService.listarTiposContagens();
 	}
 
 	public void salvar() {
-		if (planilha.getIdUsuarioCriador() == null) {
-			planilha.setIdUsuarioCriador(usuarioLogado);
-		}
-		String redirect = "";
-		if (planilha.getEstado().equals(EstadoPlanilha.CRIADA)) {
-			redirect = "criada";
-		} else if (planilha.getEstado().equals(EstadoPlanilha.EM_REVISAO)) {
-			redirect = "em-revisao";
-		} else if (planilha.getEstado().equals(EstadoPlanilha.EM_APROVACAO)) {
-			redirect = "em-aprovacao";
-		}
-		Planilha planilhaSalva = planilhaDAO.salvar(planilha);
-		Mensagem.informacao("Planilha salva com sucesso!");
-		ManagedBeanUtils.redirecionar("/contagem/planilha/" + redirect + "/");
+		Planilha planilhaSalva = planilhaService
+				.salvar(planilha, usuarioLogado,"salva");
 		salvarHistorico(planilhaSalva);
 	}
 
 	public void salvarHistorico(Planilha planilhaSalva) {
 		historicoPlanilha = new HistoricoPlanilha(planilhaSalva, usuarioLogado);
-		historicoPlanilhaDAO.salvar(historicoPlanilha);
+		historicoPlanilhaService.salvar(historicoPlanilha);
 	}
-	
+
 	public void selecionarPlanilhaEnviarRevisao(Planilha planilhaEdicao) {
 		planilha = planilhaEdicao;
 		ManagedBeanUtils.showDialog("enviarRevisaoPlanilhaDialog");
 	}
 
 	public void enviarRevisao() {
-		planilha.setEstado(EstadoPlanilha.EM_REVISAO);
-		Planilha planilhaSalva = planilhaDAO.salvar(planilha);
-		Mensagem.informacao("Planilha enviada para revisão com sucesso!");
-		ManagedBeanUtils.redirecionar("/contagem/planilha/criada/");
+		Planilha planilhaSalva = planilhaService.enviarRevisao(planilha,
+				usuarioLogado);
 		salvarHistorico(planilhaSalva);
 	}
 
@@ -107,32 +91,21 @@ public class CadastroPlanilhaFormularioBean {
 	}
 
 	public void revisar() {
-		if (verificarItensEmBranco(planilha)) {
-			Mensagem.erro("Não é possível revisar a planilha pois existem itens da planilha em branco!");
-		} else {
-			planilha.setEstado(EstadoPlanilha.REVISADA);
-			planilha.setDataRevisao(new Date());
-			if (planilha.getIdUsuarioRevisor() == null) {
-				planilha.setIdUsuarioRevisor(usuarioLogado);
-			}
-			Planilha planilhaSalva = planilhaDAO.salvar(planilha);
-			Mensagem.informacao("Planilha revisada com sucesso!");
-			ManagedBeanUtils.redirecionar("/contagem/planilha/em-revisao/");
+		Planilha planilhaSalva = planilhaService.revisar(planilha,
+				usuarioLogado);
+		if (!planilhaSalva.equals(planilha)) {
 			salvarHistorico(planilhaSalva);
-			ManagedBeanUtils.hideDialog("revisarPlanilhaDialog");
 		}
 	}
-	
+
 	public void selecionarPlanilhaEnviarAprovacao(Planilha planilhaEdicao) {
 		planilha = planilhaEdicao;
 		ManagedBeanUtils.showDialog("enviarAprovacaoPlanilhaDialog");
 	}
 
 	public void enviarAprovacao() {
-		planilha.setEstado(EstadoPlanilha.EM_APROVACAO);
-		Planilha planilhaSalva = planilhaDAO.salvar(planilha);
-		Mensagem.informacao("Planilha enviada para aprovação com sucesso!");
-		ManagedBeanUtils.redirecionar("/contagem/planilha/revisada/");
+		Planilha planilhaSalva = planilhaService.enviarAprovacao(planilha,
+				usuarioLogado);
 		salvarHistorico(planilhaSalva);
 	}
 
@@ -142,19 +115,10 @@ public class CadastroPlanilhaFormularioBean {
 	}
 
 	public void aprovar() {
-		if (verificarItensEmBranco(planilha)) {
-			Mensagem.erro("Não é possível aprovar a planilha pois existem itens da planilha em branco!");
-		} else {
-			planilha.setEstado(EstadoPlanilha.APROVADA);
-			planilha.setDataAprovacao(new Date());
-			if (planilha.getIdUsuarioAprovador() == null) {
-				planilha.setIdUsuarioAprovador(usuarioLogado);
-			}
-			Planilha planilhaSalva = planilhaDAO.salvar(planilha);
-			Mensagem.informacao("Planilha aprovada com sucesso!");
-			ManagedBeanUtils.redirecionar("/contagem/planilha/em-aprovacao/");
+		Planilha planilhaSalva = planilhaService.aprovar(planilha,
+				usuarioLogado);
+		if (!planilhaSalva.equals(planilha)) {
 			salvarHistorico(planilhaSalva);
-			ManagedBeanUtils.hideDialog("aprovarPlanilhaDialog");
 		}
 	}
 
@@ -164,32 +128,13 @@ public class CadastroPlanilhaFormularioBean {
 	}
 
 	public void invalidar() {
-		String redirect = "";
-		if (planilha.getEstado().equals(EstadoPlanilha.CRIADA)) {
-			redirect = "criada";
-		} else if (planilha.getEstado().equals(EstadoPlanilha.EM_REVISAO)) {
-			redirect = "em-revisao";
-		} else if (planilha.getEstado().equals(EstadoPlanilha.REVISADA)) {
-			redirect = "revisada";
-		} else if (planilha.getEstado().equals(EstadoPlanilha.EM_APROVACAO)) {
-			redirect = "em-aprovacao";
-		} else {
-			redirect = "invalidada";
-		}
-		planilha.setEstado(EstadoPlanilha.INVALIDADA);
-		planilha.setDataInvalidacao(new Date());
-		if (planilha.getIdUsuarioInvalidador() == null) {
-			planilha.setIdUsuarioInvalidador(usuarioLogado);
-		}
-		Planilha planilhaSalva = planilhaDAO.salvar(planilha);
-		Mensagem.informacao("Planilha invalidada com sucesso!");
-		ManagedBeanUtils.redirecionar("/contagem/planilha/" + redirect + "/");
+		Planilha planilhaSalva = planilhaService.invalidar(planilha,
+				usuarioLogado);
 		salvarHistorico(planilhaSalva);
-		ManagedBeanUtils.hideDialog("invalidarPlanilhaDialog");
 	}
 
 	public boolean verificarItensEmBranco(Planilha planilha) {
-		return planilhaDAO.verificarItensEmBranco(planilha);
+		return planilhaService.verificarItensEmBranco(planilha);
 	}
 
 	public void listarItens() {
@@ -203,23 +148,9 @@ public class CadastroPlanilhaFormularioBean {
 	}
 
 	public void imprimir() {
-		// TODO
-		Mensagem.informacao("Planilha enviada para impressão com sucesso!");
-		String redirect = "";
-		if (planilha.getEstado().equals(EstadoPlanilha.CRIADA)) {
-			redirect = "criada";
-		} else if (planilha.getEstado().equals(EstadoPlanilha.EM_REVISAO)) {
-			redirect = "em-revisao";
-		} else if (planilha.getEstado().equals(EstadoPlanilha.REVISADA)) {
-			redirect = "revisada";
-		} else if (planilha.getEstado().equals(EstadoPlanilha.EM_APROVACAO)) {
-			redirect = "em-aprovacao";
-		} else if (planilha.getEstado().equals(EstadoPlanilha.APROVADA)) {
-			redirect = "aprovada";
-		} else {
-			redirect = "invalidada";
-		}
-		ManagedBeanUtils.redirecionar("/contagem/planilha/" + redirect + "/");
+		Planilha planilhaSalva = planilhaService.imprimir(planilha,
+				usuarioLogado);
+		salvarHistorico(planilhaSalva);
 	}
 
 	public List<OS> getOss() {

@@ -10,7 +10,11 @@ public interface ItemPlanilhaService {
 	public List<ItemPlanilha> listar(Planilha idPlanilha);
 	public ItemPlanilha obterPorId(int id);
 	public ItemPlanilha salvar(ItemPlanilha itemPlanilha);
-	public boolean verificarUnicidade(String nome, Integer id, Planilha idPlanilha);
+	public boolean verificarUnicidade(String nome, Integer id,
+			Planilha idPlanilha);
 	public ItemPlanilha excluirItemPlanilha(Integer id);
+	public ItemPlanilha verificarPontuacao(
+			ItemPlanilha itemPlanilhaParaVerificacao);
+	public ItemPlanilha inserirItemPlanilha(Planilha planilha);
 
 }

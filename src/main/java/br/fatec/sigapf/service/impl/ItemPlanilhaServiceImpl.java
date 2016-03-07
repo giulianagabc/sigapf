@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import br.fatec.sigapf.dao.ItemPlanilhaDAO;
+import br.fatec.sigapf.dao.PlanilhaDAO;
 import br.fatec.sigapf.dominio.ComplexidadeItemPlanilha;
 import br.fatec.sigapf.dominio.ItemPlanilha;
 import br.fatec.sigapf.dominio.Planilha;
@@ -25,6 +26,10 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 	private TipoDeflatorService tipoDeflatorService;
 	@Autowired
 	private TipoFuncaoService tipoFuncaoService;
+	@Autowired
+	private PlanilhaDAO planilhaDAO;
+
+	private double valorDeflator;
 
 	@Override
 	public List<ItemPlanilha> listar(Planilha idPlanilha) {
@@ -67,11 +72,18 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 		return itemPlanilhaInserido;
 	}
 
-	// TODO - valor do deflator para multiplicar na qtde pf total
-	// TODO - receber o valor do deflator da planilha
 	@Override
 	public ItemPlanilha verificarPontuacao(
 			ItemPlanilha itemPlanilhaParaVerificacao) {
+		Planilha planilha = planilhaDAO.obterPorId(itemPlanilhaParaVerificacao
+				.getIdPlanilha().getId());
+
+		if (itemPlanilhaParaVerificacao.getTipoDeflator().getSigla()
+				.equals("I")) {
+			valorDeflator = planilha.getDeflatorAdd();
+		} else {
+			valorDeflator = planilha.getDeflatorCon();
+		}
 		/* Método NESMA - Estimativa */
 		if ((itemPlanilhaParaVerificacao.getQuantidadeRl() == 0)
 				|| (itemPlanilhaParaVerificacao.getQuantidadeTd() == 0)) {
@@ -80,21 +92,24 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 				itemPlanilhaParaVerificacao
 						.setComplexidade(ComplexidadeItemPlanilha.BAIXA);
 				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoLocal(7);
-				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoTotal(7);
+				itemPlanilhaParaVerificacao
+						.setQuantidadePontoFuncaoTotal(7 * valorDeflator);
 			}
 			if (itemPlanilhaParaVerificacao.getTipoFuncao().getSigla()
 					.equals("AIE")) {
 				itemPlanilhaParaVerificacao
 						.setComplexidade(ComplexidadeItemPlanilha.BAIXA);
 				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoLocal(5);
-				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoTotal(5);
+				itemPlanilhaParaVerificacao
+						.setQuantidadePontoFuncaoTotal(5 * valorDeflator);
 			}
 			if (itemPlanilhaParaVerificacao.getTipoFuncao().getSigla()
 					.equals("SE")) {
 				itemPlanilhaParaVerificacao
 						.setComplexidade(ComplexidadeItemPlanilha.MEDIA);
 				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoLocal(5);
-				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoTotal(5);
+				itemPlanilhaParaVerificacao
+						.setQuantidadePontoFuncaoTotal(5 * valorDeflator);
 			}
 			if ((itemPlanilhaParaVerificacao.getTipoFuncao().getSigla()
 					.equals("CE"))
@@ -103,7 +118,8 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 				itemPlanilhaParaVerificacao
 						.setComplexidade(ComplexidadeItemPlanilha.MEDIA);
 				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoLocal(4);
-				itemPlanilhaParaVerificacao.setQuantidadePontoFuncaoTotal(4);
+				itemPlanilhaParaVerificacao
+						.setQuantidadePontoFuncaoTotal(4 * valorDeflator);
 			}
 		} else /* Método IFPUG - Detalhada */{
 			if (itemPlanilhaParaVerificacao.getTipoFuncao().getSigla()
@@ -116,7 +132,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(7);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(7);
+								.setQuantidadePontoFuncaoTotal(7 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 20)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 50)) {
@@ -125,7 +141,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(7);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(7);
+								.setQuantidadePontoFuncaoTotal(7 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 50) {
 						itemPlanilhaParaVerificacao
@@ -133,7 +149,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(10);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(10);
+								.setQuantidadePontoFuncaoTotal(10 * valorDeflator);
 					}
 				}
 				if ((itemPlanilhaParaVerificacao.getQuantidadeRl() >= 2)
@@ -145,7 +161,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(7);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(7);
+								.setQuantidadePontoFuncaoTotal(7 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 20)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 50)) {
@@ -154,7 +170,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(10);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(10);
+								.setQuantidadePontoFuncaoTotal(10 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 50) {
 						itemPlanilhaParaVerificacao
@@ -162,7 +178,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(15);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(15);
+								.setQuantidadePontoFuncaoTotal(15 * valorDeflator);
 					}
 				}
 				if (itemPlanilhaParaVerificacao.getQuantidadeRl() > 5) {
@@ -173,7 +189,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(10);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(10);
+								.setQuantidadePontoFuncaoTotal(10 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 20)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 50)) {
@@ -182,7 +198,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(15);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(15);
+								.setQuantidadePontoFuncaoTotal(15 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 50) {
 						itemPlanilhaParaVerificacao
@@ -190,7 +206,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(15);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(15);
+								.setQuantidadePontoFuncaoTotal(15 * valorDeflator);
 					}
 				}
 			}
@@ -204,7 +220,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(7);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(7);
+								.setQuantidadePontoFuncaoTotal(7 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 20)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 50)) {
@@ -213,7 +229,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(7);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(7);
+								.setQuantidadePontoFuncaoTotal(7 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 50) {
 						itemPlanilhaParaVerificacao
@@ -221,7 +237,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(10);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(10);
+								.setQuantidadePontoFuncaoTotal(10 * valorDeflator);
 					}
 				}
 				if ((itemPlanilhaParaVerificacao.getQuantidadeRl() >= 2)
@@ -233,7 +249,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(7);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(7);
+								.setQuantidadePontoFuncaoTotal(7 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 20)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 50)) {
@@ -242,7 +258,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(10);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(10);
+								.setQuantidadePontoFuncaoTotal(10 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 50) {
 						itemPlanilhaParaVerificacao
@@ -250,7 +266,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(15);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(15);
+								.setQuantidadePontoFuncaoTotal(15 * valorDeflator);
 					}
 				}
 				if (itemPlanilhaParaVerificacao.getQuantidadeRl() > 5) {
@@ -261,7 +277,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(10);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(10);
+								.setQuantidadePontoFuncaoTotal(10 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 20)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 50)) {
@@ -270,7 +286,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(15);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(15);
+								.setQuantidadePontoFuncaoTotal(15 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 50) {
 						itemPlanilhaParaVerificacao
@@ -278,7 +294,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(15);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(15);
+								.setQuantidadePontoFuncaoTotal(15 * valorDeflator);
 					}
 				}
 			}
@@ -292,7 +308,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(3);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(3);
+								.setQuantidadePontoFuncaoTotal(3 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 5)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 15)) {
@@ -301,7 +317,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(3);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(3);
+								.setQuantidadePontoFuncaoTotal(3 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 15) {
 						itemPlanilhaParaVerificacao
@@ -309,7 +325,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(4);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(4);
+								.setQuantidadePontoFuncaoTotal(4 * valorDeflator);
 					}
 				}
 				if (itemPlanilhaParaVerificacao.getQuantidadeRl() == 2) {
@@ -320,7 +336,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(3);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(3);
+								.setQuantidadePontoFuncaoTotal(3 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 5)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 15)) {
@@ -329,7 +345,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(4);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(4);
+								.setQuantidadePontoFuncaoTotal(4 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 15) {
 						itemPlanilhaParaVerificacao
@@ -337,7 +353,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(6);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(6);
+								.setQuantidadePontoFuncaoTotal(6 * valorDeflator);
 					}
 				}
 				if (itemPlanilhaParaVerificacao.getQuantidadeRl() > 2) {
@@ -348,7 +364,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(4);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(4);
+								.setQuantidadePontoFuncaoTotal(4 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 5)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 15)) {
@@ -357,7 +373,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(6);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(6);
+								.setQuantidadePontoFuncaoTotal(6 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 15) {
 						itemPlanilhaParaVerificacao
@@ -365,7 +381,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(6);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(6);
+								.setQuantidadePontoFuncaoTotal(6 * valorDeflator);
 					}
 				}
 			}
@@ -379,7 +395,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(3);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(3);
+								.setQuantidadePontoFuncaoTotal(3 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 6)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 19)) {
@@ -388,7 +404,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(3);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(3);
+								.setQuantidadePontoFuncaoTotal(3 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 19) {
 						itemPlanilhaParaVerificacao
@@ -396,7 +412,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(4);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(4);
+								.setQuantidadePontoFuncaoTotal(4 * valorDeflator);
 					}
 				}
 				if ((itemPlanilhaParaVerificacao.getQuantidadeRl() >= 2)
@@ -408,7 +424,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(3);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(3);
+								.setQuantidadePontoFuncaoTotal(3 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 6)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 19)) {
@@ -417,7 +433,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(4);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(4);
+								.setQuantidadePontoFuncaoTotal(4 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 19) {
 						itemPlanilhaParaVerificacao
@@ -425,7 +441,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(6);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(6);
+								.setQuantidadePontoFuncaoTotal(6 * valorDeflator);
 					}
 				}
 				if (itemPlanilhaParaVerificacao.getQuantidadeRl() > 3) {
@@ -436,7 +452,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(4);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(4);
+								.setQuantidadePontoFuncaoTotal(4 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 6)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 19)) {
@@ -445,7 +461,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(6);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(6);
+								.setQuantidadePontoFuncaoTotal(6 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 19) {
 						itemPlanilhaParaVerificacao
@@ -453,7 +469,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(6);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(6);
+								.setQuantidadePontoFuncaoTotal(6 * valorDeflator);
 					}
 				}
 			}
@@ -467,7 +483,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(4);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(4);
+								.setQuantidadePontoFuncaoTotal(4 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 6)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 19)) {
@@ -476,7 +492,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(4);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(4);
+								.setQuantidadePontoFuncaoTotal(4 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 19) {
 						itemPlanilhaParaVerificacao
@@ -484,7 +500,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(5);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(5);
+								.setQuantidadePontoFuncaoTotal(5 * valorDeflator);
 					}
 				}
 				if ((itemPlanilhaParaVerificacao.getQuantidadeRl() >= 2)
@@ -496,7 +512,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(4);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(4);
+								.setQuantidadePontoFuncaoTotal(4 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 6)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 19)) {
@@ -505,7 +521,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(5);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(5);
+								.setQuantidadePontoFuncaoTotal(5 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 19) {
 						itemPlanilhaParaVerificacao
@@ -513,7 +529,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(7);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(7);
+								.setQuantidadePontoFuncaoTotal(7 * valorDeflator);
 					}
 				}
 				if (itemPlanilhaParaVerificacao.getQuantidadeRl() > 3) {
@@ -524,7 +540,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(5);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(5);
+								.setQuantidadePontoFuncaoTotal(5 * valorDeflator);
 					}
 					if ((itemPlanilhaParaVerificacao.getQuantidadeTd() >= 6)
 							&& (itemPlanilhaParaVerificacao.getQuantidadeTd() <= 19)) {
@@ -533,7 +549,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(7);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(7);
+								.setQuantidadePontoFuncaoTotal(7 * valorDeflator);
 					}
 					if (itemPlanilhaParaVerificacao.getQuantidadeTd() > 19) {
 						itemPlanilhaParaVerificacao
@@ -541,7 +557,7 @@ public class ItemPlanilhaServiceImpl implements ItemPlanilhaService {
 						itemPlanilhaParaVerificacao
 								.setQuantidadePontoFuncaoLocal(7);
 						itemPlanilhaParaVerificacao
-								.setQuantidadePontoFuncaoTotal(7);
+								.setQuantidadePontoFuncaoTotal(7 * valorDeflator);
 					}
 				}
 			}

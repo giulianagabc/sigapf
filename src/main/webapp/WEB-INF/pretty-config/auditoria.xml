@@ -4,12 +4,9 @@
 	xsi:schemaLocation="http://ocpsoft.org/schema/rewrite-config-prettyfaces
                       http://ocpsoft.org/xml/ns/prettyfaces/rewrite-config-prettyfaces.xsd">
 
-
-	<!-- AUDITORIA -->
-
 	<url-mapping id="auditoria">
 		<pattern value="/auditoria/" />
-		<view-id value="/pages/auditoria/auditoria-anexo.jsf" />
+		<view-id value="/pages/auditoria/auditoria.jsf" />
 	</url-mapping>
 
 </pretty-config>

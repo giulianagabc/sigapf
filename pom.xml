@@ -156,7 +156,7 @@
 			<artifactId>spring-security-taglibs</artifactId>
 			<version>${spring.security.version}</version>
 		</dependency>
-		
+
 		<!-- Velocity -->
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
@@ -169,6 +169,14 @@
 			<artifactId>velocity</artifactId>
 			<version>1.7</version>
 		</dependency>
+
+		<!-- iText -->
+		<dependency>
+			<groupId>com.itextpdf</groupId>
+			<artifactId>itextpdf</artifactId>
+			<version>5.0.6</version>
+		</dependency>
+
 
 		<!-- HIBERNATE DEPENDENCIES -->
 		<dependency>

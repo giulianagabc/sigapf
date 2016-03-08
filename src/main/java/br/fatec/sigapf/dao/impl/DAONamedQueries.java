@@ -21,6 +21,9 @@ public class DAONamedQueries {
 	public static final String LISTAR_TIPOS_FUNCAO = "from TipoFuncao order by descricao";
 	public static final String LISTAR_TIPOS_DEFLATOR = "from TipoDeflator order by descricao";
 	public static final String LISTAR_TIPOS_CONTAGEM = "from TipoContagem order by descricao";
+	public static final String LISTAR_CONTRATOS_POR_PROJETO = "from Contrato c where c.idPlanilha = :idPlanilha";
+	public static final String LISTAR_OS_POR_PROJETO = "from OS o where o.idContrato in (select c.id from Contrato c where c.idPlanilha = :idPlanilha)";
+	public static final String LISTAR_OS_POR_CONTRATO = "from OS o where o.idContrato = :idContrato";
 
 	/* LISTAR HISTORICO */
 	public static final String LISTAR_HISTORICO_USUARIO = " from HistoricoUsuario order by dtAcao desc";

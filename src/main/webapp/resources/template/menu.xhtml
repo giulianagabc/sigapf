@@ -70,19 +70,6 @@
 
 			</sec:authorize>
 
-			<sec:authorize access="hasAnyRole('AUD')">
-
-				<p:tab title="Auditoria" id="auditoria-tab">
-
-					<p:menu>
-						<p:menuitem icon="fa fa-balance-scale" value="Log de Atividades"
-							id="auditoria" url="" />
-					</p:menu>
-
-				</p:tab>
-
-			</sec:authorize>
-
 			<sec:authorize access="hasAnyRole('APF', 'GPF')">
 
 				<p:tab title="Ajuda" id="ajuda-tab">

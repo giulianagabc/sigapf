@@ -50,7 +50,7 @@
 				value="#{cadastroItemPlanilhaFormularioBean.itensPlanilha}"
 				var="itemPlanilha" emptyMessage="#{msgs.no_records_found}"
 				editable="true" style="margin-bottom:20px" scrollable="true"
-				scrollWidth="100%" rows="5" paginator="true"
+				scrollWidth="1024px" rows="5" paginator="true"
 				paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
 				rowsPerPageTemplate="5,10,15,25,50">
 				<f:facet name="header">
@@ -62,26 +62,27 @@
 				<p:ajax event="rowEditCancel"
 					listener="#{cadastroItemPlanilhaFormularioBean.onRowCancel}" />
 
-				<p:column headerText="Nome da Função">
+				<p:column headerText="Nome da Função" style="width:500px">
 					<p:cellEditor>
 						<f:facet name="output">
-							<h:outputText value="#{itemPlanilha.nome}" />
+							<h:outputText value="#{itemPlanilha.nome}" style="width:500px" />
 						</f:facet>
 						<f:facet name="input">
-							<p:inputText value="#{itemPlanilha.nome}" style="width:96%"
-								label="Nome da Função" />
+							<p:inputText value="#{itemPlanilha.nome}" label="Nome da Função"
+								style="width:500px" />
 						</f:facet>
 					</p:cellEditor>
 				</p:column>
 
-				<p:column headerText="Descrição da Função">
+				<p:column headerText="Descrição da Função" style="width:500px">
 					<p:cellEditor>
 						<f:facet name="output">
-							<h:outputText value="#{itemPlanilha.descricao}" />
+							<h:outputText value="#{itemPlanilha.descricao}"
+								style="width:500px" />
 						</f:facet>
 						<f:facet name="input">
-							<p:inputText value="#{itemPlanilha.descricao}" style="width:96%"
-								label="Descrição da Função" />
+							<p:inputText value="#{itemPlanilha.descricao}"
+								style="width:500px" label="Descrição da Função" />
 						</f:facet>
 					</p:cellEditor>
 				</p:column>
@@ -127,7 +128,7 @@
 					</p:cellEditor>
 				</p:column>
 
-				<p:column headerText="Defl." style="width:30px">
+				<p:column headerText="Deflator" style="width:60px">
 					<p:cellEditor>
 						<f:facet name="output">
 							<h:outputText value="#{itemPlanilha.tipoDeflator.sigla}" />
@@ -144,7 +145,7 @@
 					</p:cellEditor>
 				</p:column>
 
-				<p:column headerText="Complex." style="width:60px"
+				<p:column headerText="Complexidade" style="width:120px"
 					disabledSelection="true">
 					<h:outputText value="#{itemPlanilha.complexidade.label}" />
 				</p:column>
@@ -182,8 +183,6 @@
 				styleClass="margin-l-5 btn"
 				action="#{cadastroItemPlanilhaFormularioBean.voltarPlanilha}" />
 		</h:form>
-
-
 
 	</ui:define>
 

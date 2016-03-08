@@ -72,9 +72,11 @@ public class PlanilhaServiceImpl implements PlanilhaService {
 			Mensagem.informacao("Planilha salva com sucesso!");
 			ManagedBeanUtils.redirecionar("/contagem/planilha/criada/");
 			return planilhaAtualizada;
+		} else {
+			Planilha planilhaAtualizada = planilhaDAO.salvar(planilha);
+			Mensagem.informacao("Planilha salva com sucesso!");
+			return planilhaAtualizada;
 		}
-		Planilha planilhaAtualizada = planilhaDAO.salvar(planilha);
-		return planilhaAtualizada;
 	}
 
 	@Override

@@ -1,26 +1,26 @@
 package br.fatec.sigapf.managedbean;
 
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
 
-import net.sf.jasperreports.engine.JasperExportManager;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Controller;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfWriter;
-
 import br.fatec.sigapf.dominio.Planilha;
+import br.fatec.sigapf.framework.faces.Mensagem;
 import br.fatec.sigapf.service.ItemPlanilhaService;
 import br.fatec.sigapf.service.PlanilhaService;
+
+import com.lowagie.text.Document;
+import com.lowagie.text.DocumentException;
+import com.lowagie.text.Element;
+import com.lowagie.text.PageSize;
+import com.lowagie.text.Paragraph;
+import com.lowagie.text.pdf.PdfWriter;
 
 @Scope(value = "view")
 @Controller(value = "impressaoPlanilhaBean")
@@ -38,18 +38,43 @@ public class ImpressaoPlanilhaBean implements Serializable {
 	}
 
 	public void imprimir(Planilha planilhaSelecionada) {
-		Document document = new Document();
+		Document document = new Document(PageSize.A4.rotate(), 72, 72, 72, 72);
 		try {
-			PdfWriter.getInstance(document, new FileOutputStream(
-					"C:\temp\\PDF_DevMedia.pdf"));
+			PdfWriter.getInstance(document,
+					new FileOutputStream("C:\\Users\\giulianagabc\\Desktop\\"
+							+ planilhaSelecionada.getNome()
+							+ "_"
+							+ planilhaSelecionada.getIdOs().getSigla()
+							+ "_"
+							+ planilhaSelecionada.getIdOs().getIdContrato()
+									.getSigla()
+							+ "_"
+							+ planilhaSelecionada.getIdOs().getIdContrato()
+									.getIdProjeto().getSigla() + "_"
+							+ planilhaSelecionada.getEstado().getLabel()
+							+ ".pdf"));
 			document.open();
-			document.add(new Paragraph("Gerando PDF - Java"));
+			
+			//Image 
+
+			//Header
+			Paragraph p1 = new Paragraph("MINISTÉRIO DA DEFESA");
+			p1.setAlignment(Element.ALIGN_CENTER);
+			document.add(p1);
+			Paragraph p2 = new Paragraph("COMANDO DA AERONÁUTICA");
+			p2.setAlignment(Element.ALIGN_CENTER);
+			document.add(p2);
+			Paragraph p3 = new Paragraph(
+					"CENTRO DE COMPUTAÇÃO DA AERONÁUTICA DE SÃO JOSÉ DOS CAMPOS");
+			p3.setAlignment(Element.ALIGN_CENTER);
+			document.add(p3);
+
 		} catch (DocumentException de) {
 			System.err.println(de.getMessage());
 		} catch (IOException ioe) {
 			System.err.println(ioe.getMessage());
 		}
 		document.close();
+		Mensagem.informacao("PDF gerado com sucesso!");
 	}
-
 }

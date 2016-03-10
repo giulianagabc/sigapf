@@ -50,10 +50,13 @@ public abstract class Relatorio {
 		context.put("date", new DateTool());
 		context.put("esc", new EscapeTool());
 		context.put("sorter", new SortTool());
-		context.put("css", obterTextoDeArquivo("/pdf-templates/estilo-pdf.css"));
+		context.put(
+				"css",
+				obterTextoDeArquivo("/sigapf/src/main/resources/pdf-templates/estilo-pdf.css"));
 		if (border) {
-			context.put("border",
-					obterTextoDeArquivo("/pdf-templates/estilo-border-pdf.css"));
+			context.put(
+					"border",
+					obterTextoDeArquivo("/sigapf/src/main/resources/pdf-templates/estilo-border-pdf.css"));
 		}
 
 		StringWriter writer = new StringWriter();

@@ -147,12 +147,6 @@ public class CadastroPlanilhaFormularioBean {
 				+ planilha.getId());
 	}
 
-	public void imprimir() {
-		Planilha planilhaSalva = planilhaService.imprimir(planilha,
-				usuarioLogado);
-		salvarHistorico(planilhaSalva);
-	}
-
 	public List<OS> getOss() {
 		return oss;
 	}

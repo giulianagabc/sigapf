@@ -285,7 +285,7 @@
 
 			<p:commandButton styleClass="btn btn-success margin-l-5"
 				rendered="#{cadastroPlanilhaFormularioBean.planilha.id != null}"
-				action="#{impressaoPlanilhaBean.imprimir(cadastroPlanilhaFormularioBean.planilha)}" value=" Imprimir"
+				action="#{impressaoPlanilhaBean.imprimir}" value=" Imprimir"
 				id="imprimir" update=":formulario-planilha @form" icon="fa fa-print"
 				validateClient="true" ajax="false" />
 

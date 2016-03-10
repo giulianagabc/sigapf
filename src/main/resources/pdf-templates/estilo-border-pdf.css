@@ -1,0 +1,8 @@
+@media all {
+	.page-break	{ display: none; }
+}
+
+@page {
+	border: 1pt solid #000;
+	margin-bottom: 3cm;
+}

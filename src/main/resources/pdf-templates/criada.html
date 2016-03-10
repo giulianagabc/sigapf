@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+$
+css
+
+      
+@page { @bottom-center { font-size:9pt;
+	content: 'Relatório gerado em: $date.format(' dd
+		' ,$date) de $date.format(' MMMM ' , $date) de $date.format(' yyyy
+		' , $date).';
+}
+}
+</style>
+</head>
+<body>
+
+	<table>
+
+		<tr class="text-center text-bold">
+			<td colspan="2">
+				<p class="simple-line-height">
+					MINISTÉRIO DA DEFESA<br /> COMANDO DA AERONÁUTICA<br /> CENTRO DE
+					COMPUTAÇÃO DE AERONÁUTICA DE SÃO JOSÉ DOS CAMPOS<br /> RELATÓRIO
+					DE CONTAGEM
+				</p>
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">Nome: $groupPlanilha.nome</td>
+		</tr>
+		<tr>
+			<td colspan="2">Ordem de Serviço: $groupPlanilha.os.sigla</td>
+		</tr>
+		<tr>
+			<td colspan="2">Contrato: $groupPlanilha.os.contrato.sigla</td>
+		</tr>
+		<tr>
+			<td colspan="2">Projeto: $groupPlanilha.os.contrato.projeto.sigla</td>
+		</tr>
+		
+		
+		
+<!-- 		<tr> -->
+
+<!-- 			<td colspan="2">#foreach ($apresentacao in -->
+<!-- 				$groupApresentacao.apresentacoes) -->
+
+<!-- 				<p class="negative-space">Apresentou-se em: -->
+<!-- 					$date.format('dd/MM/yyyy' , $apresentacao.dataApresentacao)</p> -->
+<!-- 				<p class="double-line-height"> -->
+<!-- 					$apresentacao.titulo: $apresentacao.textoDaApresentacao <br /> #if -->
+<!-- 					($apresentacao.boletim.matches('[0-9]+')) Apresentação publicada no -->
+<!-- 					Boletim nº $apresentacao.boletim, de $date.format('dd' -->
+<!-- 					,$apresentacao.dataPublicacao) de $date.format('MMMM' , -->
+<!-- 					$apresentacao.dataPublicacao) de $date.format('yyyy' , -->
+<!-- 					$apresentacao.dataPublicacao). #else Apresentação publicada no -->
+<!-- 					Boletim nº $apresentacao.boletim #end -->
+<!-- 				</p> #end -->
+<!-- 			</td> -->
+<!-- 		</tr> -->
+
+		<div class="page-break">
+			<div class="vgap-5"></div>
+		</div>
+
+	</table>
+</body>
+</html>

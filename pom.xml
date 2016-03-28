@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>br.fatec</groupId>
 	<artifactId>sigapf</artifactId>
-	<version>1.0.0.4</version>
+	<version>1.0.0</version>
 	<packaging>war</packaging>
 	<name>sigapf</name>
 

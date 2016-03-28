@@ -47,8 +47,6 @@ ALTER TABLE ONLY tb_parametro
 
 ALTER TABLE ONLY tb_anexo
     ADD CONSTRAINT anexo_id_contrato_fkey FOREIGN KEY (id_contrato) REFERENCES tb_contrato(id);
-
-insert into tb_perfil (id,descricao) values ('AUD','AUDITOR');
-    
+ 
 INSERT INTO tb_parametro VALUES (nextval('seq_parametro_id'),'1.0.0.1',current_timestamp);
 INSERT INTO tb_parametro VALUES (nextval('seq_parametro_id'),'1.0.0.2',current_timestamp);

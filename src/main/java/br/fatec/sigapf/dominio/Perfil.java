@@ -3,8 +3,7 @@ package br.fatec.sigapf.dominio;
 public enum Perfil {
 
 	PERFIL_USUARIO("Usuário"), ADM("Administrador do Sistema"), APF(
-			"Analista de Ponto de Função"), GPF("Gerente de Ponto de Função"),
-			AUD ("Auditor");
+			"Analista de Ponto de Função"), GPF("Gerente de Ponto de Função");
 
 	private String label;
 

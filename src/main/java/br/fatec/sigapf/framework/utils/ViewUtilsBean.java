@@ -65,7 +65,6 @@ public class ViewUtilsBean implements Serializable {
 		opcoes[1] = new SelectItem(Perfil.ADM, "Administrador do Sistema");
 		opcoes[2] = new SelectItem(Perfil.APF, "Analista de Ponto de Função");
 		opcoes[3] = new SelectItem(Perfil.GPF, "Gerente de Ponto de Função");
-		opcoes[4] = new SelectItem(Perfil.AUD, "Auditor");
 		return opcoes;
 	}
 

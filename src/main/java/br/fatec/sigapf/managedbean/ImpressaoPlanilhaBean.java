@@ -1,5 +1,6 @@
 package br.fatec.sigapf.managedbean;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 
@@ -12,9 +13,12 @@ import org.springframework.stereotype.Controller;
 import br.fatec.sigapf.dominio.ItemPlanilha;
 import br.fatec.sigapf.dominio.Planilha;
 import br.fatec.sigapf.framework.faces.ManagedBeanUtils;
-import br.fatec.sigapf.relatorios.RelatorioPlanilha;
+import br.fatec.sigapf.framework.faces.Mensagem;
+import br.fatec.sigapf.relatorios.GeradorPDF;
 import br.fatec.sigapf.service.ItemPlanilhaService;
 import br.fatec.sigapf.service.PlanilhaService;
+
+import com.lowagie.text.DocumentException;
 
 @Scope(value = "view")
 @Controller(value = "impressaoPlanilhaBean")
@@ -26,6 +30,8 @@ public class ImpressaoPlanilhaBean implements Serializable {
 	private ItemPlanilhaService itemPlanilhaService;
 	@Autowired
 	private PlanilhaService planilhaService;
+	@Autowired
+	private GeradorPDF geradorPDF;
 
 	private Planilha planilhaSelecionada;
 	private List<ItemPlanilha> itens;
@@ -37,8 +43,9 @@ public class ImpressaoPlanilhaBean implements Serializable {
 		itens = itemPlanilhaService.listar(planilhaSelecionada);
 	}
 
-	public void imprimir() {
-		new RelatorioPlanilha(planilhaSelecionada, itens).gerarRelatorio(true);
+	public void imprimir() throws IOException, DocumentException {
+		geradorPDF.gerarRelatorio(planilhaSelecionada, itens);
+		Mensagem.informacao("PDF gerado com sucesso!");
 	}
 
 	public List<ItemPlanilha> getItens() {

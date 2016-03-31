@@ -76,7 +76,7 @@
 
 			<div class="vgap-30"></div>
 
-			<p:commandButton styleClass="btn btn-success"
+			<p:commandButton styleClass="#{cadastroOSFormularioBean.os.id == null ? 'btn btn-success' : 'btn'}"
 				action="#{cadastroOSFormularioBean.salvar}" value=" Salvar"
 				id="salvar" update=":formulario-os @form" icon="fa fa-save"
 				validateClient="true" />

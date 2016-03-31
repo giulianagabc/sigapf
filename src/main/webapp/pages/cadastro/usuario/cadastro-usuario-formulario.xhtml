@@ -40,11 +40,11 @@
 					</p:column>
 					<p:column>
 						<p:inputText
-							value="#{cadastroUsuarioFormularioBean.usuario.email}"
-							id="email" size="26" />
+							value="#{cadastroUsuarioFormularioBean.usuario.email}" id="email"
+							size="26" />
 					</p:column>
 				</p:row>
-				
+
 				<p:row>
 					<p:column>
 						<p:outputLabel value="Nome de Guerra:" for="nomeGuerra" />
@@ -155,13 +155,15 @@
 
 			<div class="vgap-30"></div>
 
-			<p:commandButton styleClass="btn btn-success"
+			<p:commandButton
+				styleClass="#{cadastroUsuarioFormularioBean.usuario.id == null ? 'btn btn-success' : 'btn'}"
 				action="#{cadastroUsuarioFormularioBean.salvar}" value=" Salvar"
 				id="salvar" update=":formulario-projeto @form" icon="fa fa-save"
 				validateClient="true" />
 
 			<p:commandButton value="Resetar senha" id="resetarSenha"
-				icon="fa fa-refresh" update="msgs" styleClass="btn btn-success margin-l-5"
+				icon="fa fa-refresh" update="msgs"
+				styleClass="btn btn-success margin-l-5"
 				rendered="#{cadastroUsuarioFormularioBean.usuario.id != null}"
 				action="#{cadastroUsuarioFormularioBean.resetarSenha}" />
 
